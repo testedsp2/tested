@@ -15,10 +15,22 @@ var passport = require("passport");
             }
             req.logIn(user, function(err) {
                 if (err) res.json(err);        
+                    req.session.authenticated = true;
+                    req.session.user = user;
                     return res.json(200);
             });
-        })(req, res);  
+        })(req, res); 
+        
+    },    
+
+    logOut: function(req,res){
+        req.logout();
+        req.session.authenticated = false;
+        req.session.user = undefined;
+        res.redirect("/");
+
     }
+
 
  };
 
