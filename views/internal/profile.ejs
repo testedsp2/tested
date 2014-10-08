@@ -1,0 +1,57 @@
+<%- layout('/internal_layout.ejs') %>
+    <div>
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-1">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12 text-center">
+                            <h2>Informacion de Perfil</h2>
+                            <hr class="star-primary">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-8 col-lg-offset-2">
+                            <form id="registerModalForm" action="/signup/register" method="POST"  novalidate>
+                                <div class="row control-group">
+                                    <div class="form-group col-xs-12 floating-label-form-group controls">
+                                        <label>First Name</label>
+                                        <input type="text" class="form-control" placeholder="First Name" name="firstNameRegister" id="firstNameRegisterModal" required data-validation-required-message="Please enter your first name.">
+                                        <p class="help-block text-danger"></p>
+                                    </div>
+                                </div>
+                                <div class="row control-group">
+                                    <div class="form-group col-xs-12 floating-label-form-group controls">
+                                        <label>Last Name</label>
+                                        <input type="text" class="form-control" placeholder="Last Name" name="lastNameRegister" id="lastNameRegisterModal" required data-validation-required-message="Please enter your last name.">
+                                        <p class="help-block text-danger"></p>
+                                    </div>
+                                </div>
+                                <div class="row control-group">
+                                    <div class="form-group col-xs-12 floating-label-form-group controls">
+                                        <label>Password</label>
+                                        <input type="password" class="form-control" placeholder="Password" name="passwordRegister" id="passwordRegisterModal" minlength="6" required
+                                        data-validation-required-message="Please enter your password"
+                                        data-validation-minlength-message="Too short: Minimum of '6' characters">
+                                        <p class="help-block text-danger"></p>
+                                    </div>
+                                </div>   
+                                <br>
+                                <div id="success"></div>
+                                <div class="row">
+                                    <div class="form-group col-xs-12">
+                                        <button type="submit" id="btnSuccessRegisterModal" class="btn btn-success">Guardar</button>
+                                        <button type="button" id="btnCancelRegisterModal" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
+                                    </div>
+                                    
+                                </div>
+                            </form>
+                            <div class="alert alert-danger" id="errorAlertRegister" style="display:none">
+
+                            </div>
+                        </div>
+                    </div>                            
+                </div>
+            </div>
+        </div>
+    </div>
+       

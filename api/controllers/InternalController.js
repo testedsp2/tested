@@ -27,6 +27,19 @@ module.exports = {
 
   },
 
+ profile: function(req,res){
+    var user = req.session.user;
+    console.info(user);
+    console.info(user.firstName);
+    res.view(
+      {
+        user :{
+          firstName: user.firstName,
+          email: user.email
+        }
+      }
+    );
+  },
 
   /**
    * `InternalController.changeProfile()`
