@@ -4,7 +4,7 @@
  * @description :: Server-side logic for managing internals
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-
+var crypto = require("crypto");
 module.exports = {
 	
 
@@ -61,11 +61,29 @@ module.exports = {
    */
   changeProfile: function (req, res) {
     var userID = req.session.user.id;
+    var user = req.session.user;
     var firstName = req.param("firstNameProfile");   
     var lastName = req.param("lastNameProfile");
     var password = req.param("passwordProfile");
-    internalService.changeProfile(userID,firstName,lastName,password).then(function(status){
-      return res.json(200);
+    var newPassword = req.param("newPasswordProfile");
+    var confirmPassword = req.param("confirmPasswordProfile");
+    if(newPassword!=confirmPassword){
+      return res.json({
+          message:"Error, password no coinciden"
+      });
+    }
+    var shasum = crypto.createHash("sha1");
+    var cryptoPass = shasum.update(password+user.salt).digest('hex').toUpperCase();
+
+
+    internalService.changeProfile(userID,firstName,lastName,cryptoPass,cryptoPassNew).then(function(data){
+      if (data.status==0){
+        return res.json(200);
+      }else{
+        return res.json({
+            message:"Error,password incorrecto"
+        });
+      }
     }).fail(function(status){
       return res.json({
         message:"Error al modificar datos"
