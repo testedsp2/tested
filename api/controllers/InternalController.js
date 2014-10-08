@@ -35,6 +35,7 @@ module.exports = {
       {
         user :{
           firstName: user.firstName,
+          lastName: user.lastName,
           email: user.email
         }
       }
@@ -56,6 +57,10 @@ module.exports = {
         message:"Error al modificar datos"
       });
     });
+  }
+
+  getUserInfro: function(req,res){
+    res.json(req.session.user);
   }
 };
 
