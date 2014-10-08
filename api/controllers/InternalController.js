@@ -45,8 +45,16 @@ module.exports = {
    * `InternalController.changeProfile()`
    */
   changeProfile: function (req, res) {
-    return res.json({
-      todo: 'changeProfile() is not implemented yet!'
+    var userID = req.session.user.id;
+    var firstName = req.param("firstNameProfile");   
+    var lastName = req.param("lastNameProfile");
+    var password = req.param("passwordProfile");
+    internalService.changeProfile(userID,firstName,lastName,password).then(function(status){
+      return res.json(200);
+    }).fail(function(status){
+      return res.json({
+        message:"Error al modificar datos"
+      });
     });
   }
 };
