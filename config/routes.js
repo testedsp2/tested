@@ -42,6 +42,10 @@ module.exports.routes = {
    '/tested/profile':{
     controller: 'InternalController',
     action: 'profile'
+  },
+   '/tested/newproject':{
+    controller: 'InternalController',
+    action: 'newproject'
   }
 
   /***************************************************************************

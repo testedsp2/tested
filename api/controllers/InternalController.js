@@ -42,6 +42,20 @@ module.exports = {
     );
   },
 
+  newproject: function(req,res){
+    var user = req.session.user;
+    console.info(user);
+    console.info(user.firstName);
+    res.view(
+      {
+        user :{
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email
+        }
+      }
+    );
+  },
   /**
    * `InternalController.changeProfile()`
    */
@@ -57,9 +71,9 @@ module.exports = {
         message:"Error al modificar datos"
       });
     });
-  }
+  },
 
-  getUserInfro: function(req,res){
+  getUserInfo: function(req,res){
     res.json(req.session.user);
   }
 };
