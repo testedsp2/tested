@@ -48,7 +48,7 @@
                                         <label>Confirmar Contrase&ntilde;a Nueva</label>
                                         <input type="password" class="form-control" placeholder="Password" name="confirmPasswordProfile" id="confirmPasswordProfile" minlength="6" 
                                         data-validation-minlength-message="Ingrese una contrase&ntilde;a con 6 caracteres minimo"
-                                        data-validation-match-match="newPassword"
+                                        data-validation-match-match="newPasswordProfile"
                                         >
                                         <p class="help-block text-danger"></p>
                                     </div>
@@ -63,6 +63,9 @@
                                     
                                 </div>
                             </form>
+                            <div class="alert alert-success" id="successAlertProfile" style="display:none">
+                                <p id="textSuccessAlertProfile"> </p>
+                            </div>
                             <div class="alert alert-danger" id="errorAlertProfile" style="display:none">
                                 <p id="textErrorAlertProfile"> </p>
                             </div>

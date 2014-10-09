@@ -1,22 +1,24 @@
+var crypto = require("crypto");
 var Q = require("q");
 module.exports = {
-	changeProfile: function(userID,firstNameProfile,lastNameProfile,oldPasswordProfile,newPasswordProfile,){
+	changeProfile: function(userID,firstNameProfile,lastNameProfile,oldPasswordProfile,newPasswordProfile){
 		var defer = Q.defer();
 		User.findOne(
-			{_id:userID,
-			 	password:oldPasswordProfile
+			{id:userID,
+				password:oldPasswordProfile
 			 }
-			 ).done(function(err,user){
+			 ).exec(function(err,user){
 					if (err) {
 						defer.reject(err);
 
 					}else{
+						console.log(user);
 						if (user) {
 							var salt = Date.now().toString();
 					        var shasum = crypto.createHash("sha1");
 					        user.salt = shasum.update(salt).digest('hex').toUpperCase();
    							var shasum2 = crypto.createHash("sha1");
-   							var cryptoPassNew = shasum.update(newPasswordProfile+user.salt).digest('hex').toUpperCase();
+   							var cryptoPassNew = shasum2.update(newPasswordProfile+user.salt).digest('hex').toUpperCase();
 							user.firstName = firstNameProfile;
 							user.lastName = lastNameProfile;
 							user.password = cryptoPassNew;

@@ -15,12 +15,20 @@ module.exports = function(req, res, next) {
   if (req.session.authenticated) {
   	console.info("entro a authenticated");
   	req.user = req.session.user;  	
-
-    return next();
+    User.findOne({id:req.user.id}).exec(function(err,user){
+      if(err){
+        console.log(err);
+        return res.redirect("/");
+      }else{
+        req.session.user = user;
+        return next();
+      }
+    });
+  }else{
+      return res.redirect("/");
   }
 
   // User is not allowed
   // (default res.forbidden() behavior can be overridden in `config/403.js`)
-  return res.redirect("/");
   //return res.forbidden('You are not permitted to perform this action.');
 };

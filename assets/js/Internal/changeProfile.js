@@ -6,11 +6,11 @@ var profileInfo = function(){
             var params = $form.serializeArray();
             $.post("/internal/changeProfile",params,function(data){
 				if(data == 200){
-					$('#errorAlertProfile').css("display",'');
-					$('#textErrorAlertProfile').text("Se Modifico la informacion correctamente");
+					$('#successAlertProfile').css("display",'');
+					$('#textSuccessAlertProfile').text("Se Modifico la informacion correctamente");
 				}else{
 					$('#errorAlertProfile').css("display",'');
-					$('#textErrorAlertProfile').text("No se lograron guardar los datos correctamente");
+					$('#textErrorAlertProfile').text(data.message);
 				}
 			});
         }

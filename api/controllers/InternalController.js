@@ -75,8 +75,11 @@ module.exports = {
     var shasum = crypto.createHash("sha1");
     var cryptoPass = shasum.update(password+user.salt).digest('hex').toUpperCase();
 
-
-    internalService.changeProfile(userID,firstName,lastName,cryptoPass,cryptoPassNew).then(function(data){
+    console.info(password);
+    console.info(user.salt);
+    console.info(cryptoPass);
+    console.info(userID);
+    internalService.changeProfile(userID,firstName,lastName,cryptoPass,newPassword).then(function(data){
       if (data.status==0){
         return res.json(200);
       }else{

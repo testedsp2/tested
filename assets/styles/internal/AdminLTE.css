@@ -530,7 +530,7 @@ body > .header .logo {
   width: 220px;
   font-family: 'Kaushan Script', cursive;
   font-weight: 500;
-  height: 50px;
+  height: 60px;
   display: block;
 }
 body > .header .logo .icon {
@@ -586,6 +586,7 @@ body > .header .logo .icon {
     background: #efefef;
   }
 }
+
 @media (max-width: 767px) {
   .navbar .navbar-nav > li {
     float: left;
@@ -593,6 +594,7 @@ body > .header .logo .icon {
   .navbar-nav {
     margin: 0;
     float: left;
+
   }
   .navbar-nav > li > a {
     padding-top: 15px;
@@ -676,7 +678,7 @@ body > .header .logo .icon {
   width: 20px;
 }
 .user-panel {
-  padding: 10px;
+  padding: 20px 10px;
 }
 .user-panel:before,
 .user-panel:after {
