@@ -35,5 +35,22 @@ module.exports = {
 				};
 			});
 		return defer.promise;
+	},
+
+	createProject: function(userID,name,description){
+		var defer = Q.defer();
+		var project = {
+      		name:name,
+     		description:description,
+      		owner:userID
+    	};
+    	Project.create(project).exec(function(err,project){
+	      	if(err){
+	        	defer.reject(err);
+	      	}else{
+	        	defer.resolve({status:0});
+	      	}
+    	});
+    	return defer.promise;
 	}
 };

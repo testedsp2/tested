@@ -11,7 +11,7 @@
                     </div>
                     <div class="row">
                         <div class="col-lg-8 col-lg-offset-2">
-                            <form id="profileInfoForm" action="/signup/register" method="POST"  novalidate>
+                            <form id="newProjectForm" action="/" method="POST"  novalidate>
                                 <div class="row control-group">
                                     <div class="form-group col-xs-12 floating-label-form-group controls">
                                         <label>Nombre del Proyecto</label>
@@ -34,8 +34,11 @@
                                     
                                 </div>
                             </form>
-                            <div class="alert alert-danger" id="errorAlertProfile" style="display:none">
-                                <p id="textErrorAlertProfile"> </p>
+                            <div class="alert alert-success" id="successAlertNewProject" style="display:none">
+                                <p id="textSuccessAlertNewProject"> </p>
+                            </div>
+                            <div class="alert alert-danger" id="errorAlertNewProject" style="display:none">
+                                <p id="textErrorAlertNewProject"> </p>
                             </div>
                         </div>
                     </div>                            
@@ -43,3 +46,4 @@
             </div>
         </div>
     </div>
+     <script src="/js/Internal/createNewProject.js"></script>

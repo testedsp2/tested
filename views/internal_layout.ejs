@@ -274,15 +274,15 @@
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="glyphicon glyphicon-user"></i>
-                                <span><%=user.firstName%><i class="caret"></i></span>
+                                <span><%=req.session.user.firstName%><i class="caret"></i></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header bg-light-blue">
                                     <img src="/images/DefaultProfilePicture.png" class="img-circle" alt="User Image" />
                                     <p>
-                                        <%=user.firstName%>
-                                        <small> <%=user.email%></small>
+                                        <%=req.session.user.firstName%>
+                                        <small> <%=req.session.user.email%></small>
                                     </p>
                                 </li>
                                 
@@ -292,7 +292,7 @@
                                         <a href="/tested/profile" class="btn btn-default btn-flat">Profile</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="/login/logOut" class="btn btn-default btn-flat">Sign out</a>
                                     </div>
                                 </li>
                             </ul>
@@ -312,7 +312,7 @@
                             <img src="/images/DefaultProfilePicture.png" class="img-circle" alt="User Image" />
                         </div>
                         <div class="pull-left info">
-                            <p>Bienvenido <%=user.firstName%> </p>
+                            <p>Bienvenido <%=req.session.user.firstName%> </p>
 
                             <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
                         </div>
