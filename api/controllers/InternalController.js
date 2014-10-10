@@ -14,12 +14,8 @@ module.exports = {
    */
   index: function (req, res) {
     var user = req.session.user;
-    console.info(req.session.user);
-    //console.info(user.firstName);
-    User.find().populate('projects').exec(function(err,data){
-      console.info(data);
-    });
-
+    //console.info(req.session.user);
+    //console.info(user.firstName);    
     res.view(
       {
         user: {
@@ -33,8 +29,8 @@ module.exports = {
 
  profile: function(req,res){
     var user = req.session.user;
-    console.info(user);
-    console.info(user.firstName);
+    //console.info(user);
+    //console.info(user.firstName);
     res.view(
       {
         user :{

@@ -52,5 +52,17 @@ module.exports = {
 	      	}
     	});
     	return defer.promise;
+	},
+
+	getProjectsUser: function(userId){
+		var defer = Q.defer();
+		User.findOne({id:userId}).populate('projects').exec(function(err,data){
+			if(err){
+				defer.reject({message:"Error al obtener los datos"});
+			}else{				
+				defer.resolve({status:0,projects:data.projects});				
+			}
+		});
+		return defer.promise;
 	}
 };

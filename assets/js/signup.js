@@ -7,13 +7,14 @@ var signUp = function(){
             var params = $form.serializeArray();
             console.info(params);             
             $.post("/signup/register",params, function(data) {
-            if(data.status == 0 ) {
+            if(data.status == 0) {
                 console.info("login");
                 $("#errorAlertRegister").css("display","none");
+                window.location = '/tested';
             } else {
                 $("#errorAlertRegister").css("display","block");
                 $("#errorAlertRegister").text(data.message);
-                window.location = '/';
+                //window.location = '/';
 
             }
         });
