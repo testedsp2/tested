@@ -48,7 +48,12 @@ module.exports = {
 	      	if(err){
 	        	defer.reject(err);
 	      	}else{
-	        	defer.resolve({status:0});
+	      		projectService.createProjectRoot(project.id,project.name).then(function(data){
+	      			defer.resolve({status:0});
+	      		}).fail(function(err){
+	      			defer.reject({message:"Error al inicializar el proyecto"});
+	      		});
+	        	
 	      	}
     	});
     	return defer.promise;
