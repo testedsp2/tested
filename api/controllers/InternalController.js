@@ -50,6 +50,10 @@ module.exports = {
     res.view();
   },
 
+  newtest: function(req,res){
+    res.view();
+  },
+
   createProject: function(req,res){
     var userID = req.session.user.id;
     var projectName = req.param("projectName");

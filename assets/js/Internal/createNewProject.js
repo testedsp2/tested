@@ -8,9 +8,10 @@ var createNewProject = function(){
 				if(data == 200){
 					$('#successAlertNewProject').css("display",'');
 					$('#textSuccessAlertNewProject').text("Se creo correctamente el proyecto");
+					window.location = '/tested/newtest';
 				}else{
 					$('#errorAlertNewProject').css("display",'');
-					$('#textErrorAlertNewProject').text(data.message);s
+					$('#textErrorAlertNewProject').text(data.message);
 				}
 			});
         }
