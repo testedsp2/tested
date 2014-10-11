@@ -15,7 +15,12 @@ module.exports = {
   index: function (req, res) {
     var user = req.session.user;
     //console.info(req.session.user);
-    //console.info(user.firstName);    
+    //console.info(user.firstName);
+    /*projectService.listFiles("libs").then(function(files){
+      console.info(files)
+    }).fail(function(err){
+      console.info(err);
+    })*/
     res.view(
       {
         user: {
@@ -31,6 +36,7 @@ module.exports = {
     var user = req.session.user;
     //console.info(user);
     //console.info(user.firstName);
+
     res.view(
       {
         user :{
@@ -46,18 +52,23 @@ module.exports = {
     res.view();
   },
 
+  newtest: function(req,res){
+    res.view();
+  },
+
   createProject: function(req,res){
     var userID = req.session.user.id;
     var projectName = req.param("projectName");
     var projectDescription = req.param("descriptionProject");
-    internalService.createProject(userID,projectName,projectDescription).then(function(data){
-      if(data.status != 0){
-        return res.json({
+    internalService.createProject(userID,projectName,projectDescription).then(function(data){      
+          return res.json(200);      
+    }).fail(function(err){
+        console.info(err);
+        return res.json({message:"Error al inicializar el proyecto"});
+
+        /*return res.json({
               message:"Error, No se pudo crear el proyecto correctamente"
-        });
-      }else{
-          return res.json(200);
-      }
+        });*/
     });
     
   },

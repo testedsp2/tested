@@ -12,7 +12,7 @@ module.exports = {
 						defer.reject(err);
 
 					}else{
-						console.log(user);
+						//console.log(user);
 						if (user) {
 							var salt = Date.now().toString();
 					        var shasum = crypto.createHash("sha1");
@@ -48,7 +48,13 @@ module.exports = {
 	      	if(err){
 	        	defer.reject(err);
 	      	}else{
-	        	defer.resolve({status:0});
+	      		projectService.createProjectRoot(project.id,project.name).then(function(data){
+	      			defer.resolve({status:0});
+	      		}).fail(function(err){
+	      			defer.reject(err);
+	      			//defer.reject({message:"Error al inicializar el proyecto"});
+	      		});
+	        	
 	      	}
     	});
     	return defer.promise;

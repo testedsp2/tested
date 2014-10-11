@@ -24,7 +24,7 @@ module.exports = function(req, res, next) {
         
         internalService.getProjectsUser(req.user.id).then(function(data){
           req.projects = data.projects;
-          console.info(req.projects);
+          //console.info(req.projects);
           return next();
         }).fail(function(err){
           req.logout();
