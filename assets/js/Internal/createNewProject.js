@@ -4,6 +4,8 @@ var createNewProject = function(){
         submitSuccess: function ($form, event) {
              event.preventDefault();
             var params = $form.serializeArray();
+            var btn = $("#btnSave")
+    		btn.button('loading');
             $.post("/internal/createProject",params,function(data){
 				if(data == 200){
 					$('#successAlertNewProject').css("display",'');
@@ -13,6 +15,7 @@ var createNewProject = function(){
 					$('#errorAlertNewProject').css("display",'');
 					$('#textErrorAlertNewProject').text(data.message);
 				}
+				btn.button('reset');
 			});
         }
     }); 

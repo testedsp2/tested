@@ -23,8 +23,13 @@ module.exports = {
 			rol: 'u'
 		};
 
-		User.create(objUser).then(function(user){
-			return res.json({status:0,message:"OK"})
+		User.create(objUser).then(function(user){			
+			req.logIn(user, function(err) {
+                if (err) res.json(err);        
+                    //req.session.authenticated = true;                    
+                    req.session.user = user;
+                    return res.json({status:0,message:"OK"})
+            });
 		}).catch(function(err){
 			console.info("--------------------------------");
 			console.info(err);
