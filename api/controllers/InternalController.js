@@ -135,6 +135,21 @@ module.exports = {
     });
   },
 
+  createTest: function(req,res){
+    var url = req.param("urlTest");
+    var selectorFind = req.param("selectorFind");
+    var elementName = req.param("elementName");
+    var selectorAction = req.param("selectorAction");
+    var elementText = req.param("elementText");
+    var selectorFindDesition = req.param("selectorFindDesition");
+    var elementNameDesiton= req.param("elementNameDesiton");
+    projectService.createTest(url).then(function(data){
+      res.json(200);
+    }).fail(function(err){
+      res.json(err);
+    })
+
+  },
   getUserInfo: function(req,res){
     res.json(req.session.user);
   }

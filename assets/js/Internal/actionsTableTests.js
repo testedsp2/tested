@@ -14,6 +14,17 @@ var actionsTestsTable = function(){
 	$("#table-generate-test-desition").on('click','.deleteRow',function(){
 		$(this).parent().parent().remove();
 	});
+
+	$("#btnSaveGenerateTest").click(function(){
+		var params = $("#formTest").serializeArray();
+		$.post("/internal/createTest",params,function(data){
+			if(data==200){
+				alert("test creado");
+			}else{
+				alert(data);
+			}
+		});
+	});
 }
 
 

@@ -4,6 +4,13 @@ var Q = require('q');
 
 module.exports = {
 	cprf: 'content-project',
+	templateTest : {
+  		imports: ["org.testng.*","org.openqa.selenium.*"],
+  		name:"prueba",//camibiara
+  		functionTest: {    		
+    		instrunctions:[],  
+  		}  
+	},
 	createPackage: function(packageName,projectID){
 		var defer = Q.defer();
 		Project.findOne({id:projectID}).exec(function(err,project){
@@ -28,10 +35,8 @@ module.exports = {
 				projectService.createFolder(path,"libs"),
 				projectService.createFolder(path,"bin")
 			];
-			Q.all(arrayFolders).then(function(data){
-				console.info(data);
-				projectService.listFiles("libs").then(function(files){
-					console.info(files);
+			Q.all(arrayFolders).then(function(data){				
+				projectService.listFiles("libs").then(function(files){					
 					var pathlibs = path+"/libs/";
 					console.info(pathlibs);
 					var symLinkArray = [];
@@ -106,5 +111,56 @@ module.exports = {
 		});
 		return defer.promise;		
 		//fs.createReadStream(tmpPath).pipe(fs.createWriteStream(newPath));
+	},
+	createTest: function(url){
+		var defer = Q.defer();
+		var tmpl = projectService.templateTest;
+		var time = 15;
+		var test = "";
+		for (var i = 0; i < tmpl.imports.length; i++) {
+			test += "import "+tmpl.imports[i]+";\n";
+		};
+		test += "public class "+ tmpl.name +"{\n";
+		test += "@Test\n";
+		test += "public void "+ tmpl.name +"_test(){\n";
+		test += "WebDriver driver = new FirefoxDriver();\n";
+		test += "WebDriverWait wait = new WebDriverWait(driver,15);\n";
+		test += "driver.get(\""+url+"\");\n";
+		test += "driver.close();\n}\n}";
+		projectService.createFile(projectService.cprf+"/"+tmpl.name+".java").then(function(file){
+			projectService.writeFile(projectService.cprf+"/"+tmpl.name+".java",test).then(function(data){
+				defer.resolve({stats:0});
+			}).fail(function(err){
+				defer.reject(err);
+			});
+		}).fail(function(err){
+			defer.reject(err);
+		});
+		return defer.promise;	
+	},
+
+	createFile: function(srcPath){
+		var defer = Q.defer();
+		fs.open(srcPath,"w+",function(err,file){
+			if(err){
+				defer.reject(err);
+			}else{				
+				defer.resolve(file);
+			}
+
+		});
+		return defer.promise;				
+	},
+	writeFile: function(name,text){
+		var defer = Q.defer();
+		fs.writeFile(name,text,function(err,file){
+			if(err){
+				defer.reject(err);
+			}else{				
+				defer.resolve(file);
+			}
+
+		});
+		return defer.promise;				
 	}
 };
