@@ -1,3 +1,4 @@
+
 var fs = require('fs-extra');
 var Q = require('q');
 
@@ -45,7 +46,7 @@ module.exports = {
 					});			
 			    }).fail(function(err){
 			      	defer.reject({message:"No se logro obtener el listado de archivos"});
-			    })
+			    });
 			}).fail(function(err){
 				defer.reject({message:"No se logro crear el folder"});
 			});
@@ -67,6 +68,7 @@ module.exports = {
 		});
 		return defer.promise;	
 	},
+
 	listFiles: function(path){
 		var defer = Q.defer();
 		fs.readdir(path,function(err,stats){
