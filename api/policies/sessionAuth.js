@@ -7,9 +7,34 @@
  * @docs        :: http://sailsjs.org/#!documentation/policies
  *
  */
+var Q = require('q');
 module.exports = function(req, res, next) {
   var isAuthenticated = function(){
     return req.session.passport.user != undefined
+  }
+
+  var projectCurrent = function(userId){
+    var defer = Q.defer();
+    var name = req.params["projectName"];
+    Project.findOne({ownerId:userId,name:name}).exec(function(err,proj){
+        if(err){
+          defer.reject(err);
+        }else{          
+          defer.resolve(proj);
+        }
+    });
+    return defer.promise;
+  }
+
+  var projectsList = function(userId){
+    internalService.getProjectsUser(userId).then(function(data){
+          req.projects = data.projects;
+          //console.info(req.projects);
+          return next();
+        }).fail(function(err){
+          req.logout();
+          return res.redirect("/");
+        });
   }
   // User is allowed, proceed to the next policy, 
   // or if this is the last policy, the controller  
@@ -20,16 +45,21 @@ module.exports = function(req, res, next) {
         return res.redirect("/");
       }else{
         req.session.user = user;
-
+        if(req.options.controller == "project"){
+          projectCurrent(req.user.id).then(function(proj){
+            req.projectCurrent = proj;
+            console.info(req.projectCurrent);
+            projectsList(req.user.id);  
+          }).fail(function(err){
+            res.status(500);
+            return res.next();
+            return res.json(err);   
+          });
+        }else{
+          projectsList(req.user.id);
+        }
         
-        internalService.getProjectsUser(req.user.id).then(function(data){
-          req.projects = data.projects;
-          //console.info(req.projects);
-          return next();
-        }).fail(function(err){
-          req.logout();
-          return res.redirect("/");
-        });
+        
       }
     });
   }else{

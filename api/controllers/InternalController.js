@@ -52,19 +52,17 @@ module.exports = {
     res.view();
   },
 
-  newtest: function(req,res){
-    res.view();
-  },
+  
 
   createProject: function(req,res){
     var userID = req.session.user.id;
     var projectName = req.param("projectName");
     var projectDescription = req.param("descriptionProject");
     internalService.createProject(userID,projectName,projectDescription).then(function(data){      
-          return res.json(200);      
+          return res.json({status:0,projectName:projectName});      
     }).fail(function(err){
         console.info(err);
-        return res.json({message:"Error al inicializar el proyecto"});
+        return res.json(err);
 
         /*return res.json({
               message:"Error, No se pudo crear el proyecto correctamente"
@@ -135,21 +133,7 @@ module.exports = {
     });
   },
 
-  createTest: function(req,res){
-    var url = req.param("urlTest");
-    var selectorFind = req.param("selectorFind");
-    var elementName = req.param("elementName");
-    var selectorAction = req.param("selectorAction");
-    var elementText = req.param("elementText");
-    var selectorFindDesition = req.param("selectorFindDesition");
-    var elementNameDesiton= req.param("elementNameDesiton");
-    projectService.createTest(url).then(function(data){
-      res.json(200);
-    }).fail(function(err){
-      res.json(err);
-    })
-
-  },
+  
   getUserInfo: function(req,res){
     res.json(req.session.user);
   }

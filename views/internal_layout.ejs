@@ -1,5 +1,6 @@
 <html>
     <head>
+        <title>Tested</title>
         <meta charset="UTF-8">
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
      
@@ -348,7 +349,7 @@
 
                             <ul class="treeview-menu">
                                 <% for(var i=0;i<req.projects.length;i++){%>
-                                <li><a href="#"><i class="fa fa-angle-double-right"></i><%=req.projects[i].name%></a>
+                                <li><a href="/tested/<%=req.projects[i].name%>/"><i class="fa fa-angle-double-right"></i><%=req.projects[i].name%></a>
                                 <% }%>                                
                             </ul>
                         </li>

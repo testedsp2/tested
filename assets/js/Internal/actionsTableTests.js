@@ -17,14 +17,21 @@ var actionsTestsTable = function(){
 
 	$("#btnSaveGenerateTest").click(function(){
 		var params = $("#formTest").serializeArray();
-		$.post("/internal/createTest",params,function(data){
+		var projectName = $("#formTest").attr("rel");
+		$.post("/tested/"+projectName+"/create-test",params,function(data){
 			if(data==200){
 				alert("test creado");
+				window.location = "/tested/"+projectName;
 			}else{
 				alert(data);
 			}
 		});
 	});
+	$("#btnCancelar").click(function(){		
+		var projectName = $("#formTest").attr("rel");
+		window.location = "/tested/"+projectName;
+	});
+	
 }
 
 

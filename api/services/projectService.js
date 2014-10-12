@@ -11,23 +11,27 @@ module.exports = {
     		instrunctions:[],  
   		}  
 	},
-	createPackage: function(packageName,projectID){
+	createPackage: function(packageName,projectId){
 		var defer = Q.defer();
-		Project.findOne({id:projectID}).exec(function(err,project){
-			var nameRoot = projectID + "_" + project.name;
+		Project.findOne({id:projectId}).exec(function(err,project){
 			if(err){
 				defer.reject({message: "No se logro crear el paquete"});
 			}else{
-				fs.mkdir(projectService.cprf+"/"+project.name/packageName,function(err,data){
+				projectService.createFolder(projectService.cprf+"/"+projectId+"/"+packageName).then(function(packet){
+					defer.resolve({status: 0});
+				}).fail(function(err){
+					defer.reject({message: "No se logro crear el paquete"});
 				});
-			}
-		});
 
+			}
+		});		
+		return defer.promise;
 	},
 
 	createProjectRoot: function(projectID,projectName){
 		var defer = Q.defer();
-		var nameRoot = projectID + "_" + projectName;
+		//var nameRoot = projectID + "_" + projectName;
+		var nameRoot = projectID;
 		var path = projectService.cprf+"/"+nameRoot;		
 		projectService.createFolder(path,"").then(function(data){
 			var arrayFolders = [
@@ -47,16 +51,20 @@ module.exports = {
 					Q.all(symLinkArray).then(function(filesArray){
 						defer.resolve({status:0});
 					}).fail(function(err){
-						defer.reject({message:"No se logro crear enlaces simbolicos"});	
+						console.info("createProjectRoot: No se logro crear enlaces simbolicos");
+						defer.reject({message:"Error al inicializar el proyecto"});	
 					});			
 			    }).fail(function(err){
-			      	defer.reject({message:"No se logro obtener el listado de archivos"});
+			    	console.info("createProjectRoot: No se logro obtener el listado de archivos");
+			      	defer.reject({message:"Error al inicializar el proyecto"});
 			    });
 			}).fail(function(err){
-				defer.reject({message:"No se logro crear el folder"});
+				console.info("createProjectRoot: No se logro crear el folder libs");
+				defer.reject({message:"Error al inicializar el proyecto"});
 			});
 		}).fail(function(err){
-			defer.reject({message:"No se logro crear el folder"});
+			console.info("createProjectRoot: No se logro crear los folders");
+			defer.reject({message:"Error al inicializar el proyecto"});
 		});
 		
 		return defer.promise;
@@ -64,7 +72,7 @@ module.exports = {
 
 	createFolder: function(path,folderName){
 		var defer = Q.defer();
-		fs.mkdir(path+"/"+folderName,function(err,data){
+		fs.ensureDir(path+"/"+folderName,function(err,data){
 			if(err){
 				defer.reject({message:"No se logro crear el folder"});
 			}else{
@@ -112,11 +120,14 @@ module.exports = {
 		return defer.promise;		
 		//fs.createReadStream(tmpPath).pipe(fs.createWriteStream(newPath));
 	},
-	createTest: function(url){
+	createTest: function(projectId,nameTest,paramsTest){
 		var defer = Q.defer();
+		var projectId = projectId
+		var pathProject = projectService.cprf+"/"+projectId+"/src/"
 		var tmpl = projectService.templateTest;
 		var time = 15;
-		var test = "";
+		tmpl.name= nameTest;
+		var test ="";
 		for (var i = 0; i < tmpl.imports.length; i++) {
 			test += "import "+tmpl.imports[i]+";\n";
 		};
@@ -125,11 +136,26 @@ module.exports = {
 		test += "public void "+ tmpl.name +"_test(){\n";
 		test += "WebDriver driver = new FirefoxDriver();\n";
 		test += "WebDriverWait wait = new WebDriverWait(driver,15);\n";
-		test += "driver.get(\""+url+"\");\n";
+		test += "driver.get(\""+paramsTest.url+"\");\n";
 		test += "driver.close();\n}\n}";
-		projectService.createFile(projectService.cprf+"/"+tmpl.name+".java").then(function(file){
-			projectService.writeFile(projectService.cprf+"/"+tmpl.name+".java",test).then(function(data){
-				defer.resolve({stats:0});
+		projectService.createFile(pathProject+tmpl.name+".java").then(function(file){
+			projectService.writeFile(pathProject+tmpl.name+".java",test).then(function(data){
+				var objTest = {
+					name: nameTest,
+					descripcion: "",
+					resultado:"",
+					parentId:0,
+					projectId:projectId,
+					project:projectId
+				}
+				Test.create(objTest).exec(function(err,cTest){
+					if(err){
+						defer.reject(err);
+					}else{
+						defer.resolve({stats:0});		
+					}
+				});
+				
 			}).fail(function(err){
 				defer.reject(err);
 			});
@@ -162,5 +188,16 @@ module.exports = {
 
 		});
 		return defer.promise;				
-	}
+	},
+	contentProject: function(parentId){
+		var defer = Q.defer();
+		Test.find({parentId:parentId}).exec(function(err,tests){
+			if(err){
+				defer.reject(err);
+			}else{				
+				defer.resolve(tests);
+			}
+		});
+		return defer.promise;
+	},
 };

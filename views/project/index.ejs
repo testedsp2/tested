@@ -1,0 +1,32 @@
+<%- layout('/internal_layout.ejs') %>
+<div cl
+<div id="actionProject" class="row" >
+		<div class="col-lg-1 text-center">			
+			<a href="/tested/<%=req.projectCurrent.name%>/newtest" class="text-center">
+				<img class="img-responsive" src="/images/newtest.png">				
+			</a>
+		</div>
+		<div class="col-lg-1 text-center">			
+			<a href="#newPacket" class="text-center">
+				<img class="img-responsive" src="/images/newpacket.png">				
+			</a>
+		</div>
+		
+		
+</div>
+<div class="row" >
+<br>
+<br>
+</div>
+
+<div id="contentProject" class="row" >
+	<%for(var i=0;i<tests.length;i++){%>
+	<div class="col-lg-2 text-center">			
+			<a href="#" class="text-center">
+				<img class="img-responsive" src="/images/test.png">				
+				<%=tests[i].name%>
+			</a>
+	</div>
+	<%}%>
+</div>
+

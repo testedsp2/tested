@@ -40,22 +40,33 @@ module.exports = {
 	createProject: function(userID,name,description){
 		var defer = Q.defer();
 		var project = {
-      		name:name,
-     		description:description,
+      		name:name.trim(),
+     		description:description.trim(),
+     		ownerId:userID,
       		owner:userID
     	};
-    	Project.create(project).exec(function(err,project){
-	      	if(err){
-	        	defer.reject(err);
-	      	}else{
-	      		projectService.createProjectRoot(project.id,project.name).then(function(data){
-	      			defer.resolve({status:0});
-	      		}).fail(function(err){
-	      			defer.reject(err);
-	      			//defer.reject({message:"Error al inicializar el proyecto"});
-	      		});
-	        	
-	      	}
+    	Project.findOne({ownerId:userID,name:name}).exec(function(err,proj){
+    		if(err){
+    			defer.reject(err);
+    		}else{
+    			if(proj){
+    				defer.reject({message:"Error el nombre del proyecto ya esta en uso"});
+    			}else{
+			    	Project.create(project).exec(function(err,project){
+				      	if(err){
+				        	defer.reject({message:"Error al inicializar el proyecto"});
+				      	}else{
+				      		projectService.createProjectRoot(project.id,project.name).then(function(data){
+				      			defer.resolve({status:0});
+				      		}).fail(function(err){
+				      			defer.reject(err);
+				      			//defer.reject({message:"Error al inicializar el proyecto"});
+				      		});
+				        	
+				      	}
+			    	});
+    			}
+    		}
     	});
     	return defer.promise;
 	},

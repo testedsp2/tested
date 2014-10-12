@@ -30,6 +30,9 @@ module.exports.policies = {
 
   'InternalController': {
       '*': 'sessionAuth'
+  },
+  'ProjectController': {
+      '*': 'sessionAuth'
   }
 
   /***************************************************************************

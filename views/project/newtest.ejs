@@ -1,0 +1,161 @@
+<%- layout('/internal_layout.ejs') %>
+<form id="formTest" class="form-horizontal" role="form" method="POST" rel="<%=req.projectCurrent.name%>">
+  <div class="form-group form-group-sm">
+    <label class="col-sm-1 control-label" for="formGroupInputSmall">Direccion: </label>
+    <div class="col-sm-10">
+      <input class="form-control" type="text" id="urlTxt" placeholder="Direccion" name="urlTest">
+    </div>
+
+  </div>
+
+ <div class="form-group form-group-sm">
+    <label class="col-sm-1 control-label" for="formGroupInputSmall">Nombre: </label>
+    <div class="col-sm-5">
+      <input class="form-control" type="text" id="nameTest" placeholder="Nombre del Test" name="nameTest">
+    </div>
+    
+  </div>
+<div class="panel-group" id="accordion">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+          Proceso
+        </a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in">
+      <div class="panel-body">
+      	<div class="col-md-10">
+      		<table class="table table-bordered" id="table-generate-test-actions">
+      		<thead>
+	      		<tr>
+	      			<th>Buscar por </th>
+	      			<th>Nombre</th>
+	      			<th>Accion</th>
+	      			<th>Texto</th>
+	      			<th></th>
+	      		</tr>
+      		</thead>
+      		
+      	</table>
+        <button id="addAction" type="button" class="btn btn-primary" data-toggle="button">
+        	<span class="glyphicon glyphicon-plus"></span> Agregar Accion
+    	</button>
+      	</div>
+      	
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+          Decision
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">
+        <div class="col-md-10">
+      		<table class="table table-bordered" id="table-generate-test-desition">
+      		<thead>
+	      		<tr>
+	      			<th>Buscar por </th>
+	      			<th>Nombre</th>
+	      			<th></th>
+	      		</tr>
+      		</thead>
+      	</table>
+        <button id="addDesition" type="button" class="btn btn-primary" data-toggle="button">
+        	<span class="glyphicon glyphicon-plus"></span> Agregar Decision
+    	</button>
+      	</div>
+      	
+      </div>
+    </div>
+      </div>
+    </div>
+    <center>
+	    <div class="form-horizontal" role="form">
+	    	<button id="btnSaveGenerateTest" type="button" class="btn btn-success" data-toggle="button">
+	   			<span class="glyphicon glyphicon-floppy-disk"></span> Generar Test
+			</button>
+			<button id="btnCancelar" type="button" class="btn btn-warning" data-toggle="button">
+	   			<span class="glyphicon glyphicon-remove-circle"></span> Cancelar
+			</button>
+	    </div>
+	</center>
+  </div>
+</div>
+</form>
+
+
+
+
+
+<script src="/js/jquery.tmpl.min.js"></script>
+<script src="/js/Internal/actionsTableTests.js"></script>
+
+<script id="template-row-form-tests" type="text/x-jquery-tmpl">
+	<tr>
+      	<td class="col-md-3">
+      		<div class="dropdown">
+  				<select class="form-control" id="Accion" data-toggle="dropdown" name="selectorFind">
+    				Buscar por:
+    				<option value="id">Id</option>
+				    <option value="class">Clase</option>
+				    <option value="text">Texto</option>
+    			</select>
+			</div>
+      	</td>
+
+      	<td class="col-md-4">
+     		 <input type="text" class="form-control" name="elementName">
+     	</td>
+     	<td class="col-md-3">
+      		<div class="dropdown">
+  				<select class="form-control" id="Accion" data-toggle="dropdown" name="selectorAction">
+    				Accion
+    				<option value="click">Click</option>
+				   	<option value="write">Escribir</option>
+    			</select>
+			</div>
+      	</td>
+
+      	<td class="col-md-4">
+     		 <input type="text" class="form-control" name="elementText">
+     	</td>
+
+     	<td class="col-md-1">
+     		<button type="button" class="btn btn-danger deleteRow" data-toggle="button">
+        		<span class="glyphicon glyphicon-remove"></span>
+    		</button>
+     	</td>
+     </tr>
+</script>
+
+<script id="template-desition-form-tests" type="text/x-jquery-tmpl">
+	<tr>
+      	<td class="col-md-3">
+      		<div class="dropdown">
+  				<select class="form-control" data-toggle="dropdown" name="selectorFindDesition">
+    				Buscar por:
+    				<option value="id">Id</option>
+				    <option value="class">Clase</option>
+				    <option value="text">Texto</option>
+    			</select>
+			</div>
+      	</td>
+
+      	<td class="col-md-4">
+     		 <input type="text" class="form-control" name="nameElementDesition"></input>
+     	</td>
+     	<td class="col-md-1">
+     		<button type="button" class="btn btn-danger deleteRow" data-toggle="button">
+        		<span class="glyphicon glyphicon-remove"></span>
+    		</button>
+     	</td>
+     </tr>
+</script>
+				   

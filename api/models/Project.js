@@ -15,12 +15,16 @@ module.exports = {
         description:{
             type: 'string'
         },
+        ownerId:{
+            type: 'string',
+            required: true
+        },
         owner: {
             model: 'user'
         },
         tests: {
             collection: 'test',
-            via: 'parent'
+            via: 'project'
         }
 
     }

@@ -111,7 +111,7 @@ body.fixed .wrapper {
 /* Content */
 .content {
   padding: 20px 15px;
-  background: #f9f9f9;
+  background: #ffffff;
   overflow: auto;
 }
 /* Utility */
@@ -530,7 +530,7 @@ body > .header .logo {
   width: 220px;
   font-family: 'Kaushan Script', cursive;
   font-weight: 500;
-  height: 60px;
+  height: 50px;
   display: block;
 }
 body > .header .logo .icon {

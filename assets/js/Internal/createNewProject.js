@@ -7,10 +7,10 @@ var createNewProject = function(){
             var btn = $("#btnSave")
     		btn.button('loading');
             $.post("/internal/createProject",params,function(data){
-				if(data == 200){
+				if(data.status == 0){
 					$('#successAlertNewProject').css("display",'');
 					$('#textSuccessAlertNewProject').text("Se creo correctamente el proyecto");
-					window.location = '/tested/newtest';
+					window.location = '/tested/'+data.projectName;
 				}else{
 					$('#errorAlertNewProject').css("display",'');
 					$('#textErrorAlertNewProject').text(data.message);

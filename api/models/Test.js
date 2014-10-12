@@ -7,9 +7,9 @@
 
 module.exports = {
     connection: 'someMongodbServer',
-    identity: 'test',
+    schema: false,    
     attributes: {
-         name: {
+        name: {
             type: 'string',
             required: true
         },
@@ -19,7 +19,13 @@ module.exports = {
         resultado:{
             type: 'string'
         },
-        parent: {
+        parentId:{
+            type: 'string'
+        },
+        projectId:{
+            type: 'string'
+        },
+        project: {
             model: 'project'
         }    
     }

@@ -47,10 +47,19 @@ module.exports.routes = {
     controller: 'InternalController',
     action: 'newproject'
   },
-   '/tested/newtest':{
-    controller: 'InternalController',
+   '/tested/:projectName':{
+    controller: 'ProjectController',
+    action: 'index'
+  },
+   '/tested/:projectName/newtest':{
+    controller: 'ProjectController',
     action: 'newtest'
-  }
+  },
+ 
+  '/tested/:projectName/create-test':{
+    controller: 'ProjectController',
+    action: 'createTest'
+  },
 
   /***************************************************************************
   *                                                                          *
