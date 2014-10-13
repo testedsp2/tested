@@ -22,7 +22,7 @@ var actionsTestsTable = function(){
 		$.post("/tested/"+projectName+"/"+packetId+"/create-test",params,function(data){
 			if(data==200){
 				$('#successAlertNewTest').css("display",'');
-				$('#textSuccessAlertNewTest').text("Se creo correctamente el packete");
+				$('#textSuccessAlertNewTest').text("Se creo correctamente el test");
 				window.location = "/tested/"+projectName+"/"+packetId+"/";
 			}else{
 				$('#errorAlertNewTest').css("display",'');

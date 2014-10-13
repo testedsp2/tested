@@ -53,6 +53,7 @@ module.exports = {
     if(packetId == undefined){
       packetId = "0";
     }
+
     if(typeof selectorFind != "object")
       selectorFind = [selectorFind];
 
@@ -70,6 +71,7 @@ module.exports = {
 
     if(typeof elementNameDesition != "object")
       elementNameDesition = [elementNameDesition];
+
 
     var paramsTest = {
     	url: url,

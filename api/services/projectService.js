@@ -219,6 +219,58 @@ module.exports = {
 		test += "	}\n";
 		test += "}";
 
+		test += "public class "+ tmpl.name +"{\n\n";
+		test += "	WebDriver driver;\n";
+		test += "	WebDriverWait wai;\n\n";
+		test += "	@Test\n";
+		test += "	public void "+ tmpl.name +"_test(){\n";
+		test += "		driver = new FirefoxDriver();\n";
+		test += "		wait = new WebDriverWait(driver,15);\n";
+		test += "		driver.get(\""+paramsTest.url+"\");\n";
+
+		for(var i =0; i <paramsTest.selectorFind.length; i++){
+			console.log(paramsTest.selectorFind[i]);
+			if(paramsTest.selectorFind[i] == "class"){
+				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementName[i] +"\")));\n";
+				test += "		driver.findElement(By.className(\""+paramsTest.elementName[i]+"\"))";
+				test = projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[i]);
+
+			}else 
+			if(paramsTest.selectorFind[i] == "id"){
+				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementName[i] +"\")));\n";
+				test += "		driver.findElement(By.id(\""+paramsTest.elementName[i]+"\"))";
+				test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[i]);
+			}else
+			if(paramsTest.selectorFind[i] == "text"){
+				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\")));\n";
+				test += "		driver.findElement(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\"))";
+				test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[i]);
+			}
+		}
+
+		test += "		try{\n"; 
+		for(var i =0; i <paramsTest.selectorFindDesition.length; i++){
+			if(paramsTest.selectorFindDesition[i] == "class"){
+				test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementNameDesition[i] +"\")));\n";	
+			}else
+			if(paramsTest.selectorFindDesition[i] == "id"){
+				test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementNameDesition[i] +"\")));\n";
+			}else
+			if(paramsTest.selectorFindDesition[i] == "text"){
+				test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementNameDesition[i]+"']\")));\n";
+			}
+		}
+		test += "		}catch(Exception e){\n";
+		test += "			Assert.fail(\" MENSAJE DE ERROR \" + e.getMessage());\n";
+		test += "		}\n";
+		test += "	}\n\n"
+
+		test += "	@AfterClass\n";
+		test += "	public void closeDriver(){\n";
+		test += "		driver.close();\n";
+		test += "	}\n";
+		test += "}";
+
 		Test.findOne({parentId:parentId,name:nameTest}).exec(function(err,objTest){
 			if(err){
 				defer.reject(err);
