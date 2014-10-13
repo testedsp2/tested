@@ -21,10 +21,12 @@ var actionsTestsTable = function(){
 		var packetId = Options.packetId;
 		$.post("/tested/"+projectName+"/"+packetId+"/create-test",params,function(data){
 			if(data==200){
-				alert("test creado");
-				window.location = "/tested/"+projectName;
+				$('#successAlertNewTest').css("display",'');
+				$('#textSuccessAlertNewTest').text("Se creo correctamente el packete");
+				window.location = "/tested/"+projectName+"/"+packetId+"/";
 			}else{
-				alert(data);
+				$('#errorAlertNewTest').css("display",'');
+				$('#textErrorAlertNewTest').text(data.message);
 			}
 		});
 	});

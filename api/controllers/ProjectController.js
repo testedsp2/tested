@@ -47,14 +47,38 @@ module.exports = {
     var selectorAction = req.param("selectorAction");
     var elementText = req.param("elementText");
     var selectorFindDesition = req.param("selectorFindDesition");
-    var elementNameDesiton= req.param("elementNameDesiton");
+    var elementNameDesition= req.param("elementNameDesition");
     var packetId = req.param("packetId");
     var projectId = req.projectCurrent.id;
     if(packetId == undefined){
       packetId = "0";
     }
+    if(typeof selectorFind != "object")
+      selectorFind = [selectorFind];
+
+    if(typeof elementName != "object")
+      elementName = [elementName];
+
+    if(typeof selectorAction != "object")
+      selectorAction = [selectorAction];
+
+    if(typeof elementText != "object")
+      elementText = [elementText];
+
+    if(typeof selectorFindDesition != "object")
+      selectorFindDesition = [selectorFindDesition];
+
+    if(typeof elementNameDesition != "object")
+      elementNameDesition = [elementNameDesition];
+
     var paramsTest = {
-    	url: url
+    	url: url,
+      selectorFind: selectorFind,
+      elementName: elementName,
+      selectorAction: selectorAction,
+      elementText: elementText,
+      selectorFindDesition: selectorFindDesition,
+      elementNameDesition: elementNameDesition
     }
     projectService.createTest(projectId,packetId,nameTest,paramsTest).then(function(data){
       res.json(200);

@@ -6,7 +6,7 @@
   };
 </script>
 
-
+<div  >
 <form id="formTest" class="form-horizontal" role="form" method="POST" rel="<%=req.projectCurrent.name%>">
   <div class="form-group form-group-sm">
     <label class="col-sm-1 control-label" for="formGroupInputSmall">Direccion: </label>
@@ -95,8 +95,15 @@
 	    </div>
 	</center>
   </div>
-</div>
+
 </form>
+<div class="alert alert-success" id="successAlertNewTest" style="display:none">
+    <p id="textSuccessAlertNewTest"> </p>
+</div>
+<div class="alert alert-danger" id="errorAlertNewTest" style="display:none">
+    <p id="textErrorAlertNewTest"> </p>
+</div>
+</div>
 
 
 
@@ -157,7 +164,7 @@
       	</td>
 
       	<td class="col-md-4">
-     		 <input type="text" class="form-control" name="nameElementDesition"></input>
+     		 <input type="text" class="form-control" name="elementNameDesition"></input>
      	</td>
      	<td class="col-md-1">
      		<button type="button" class="btn btn-danger deleteRow" data-toggle="button">
