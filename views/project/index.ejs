@@ -1,20 +1,25 @@
 <%- layout('/internal_layout.ejs') %>
 <div class="row" >
 <ol class="breadcrumb">
-  <li><a href="#">Home</a></li>
-  <li><a href="#">Library</a></li>
-  <li class="active">Data</li>
+  <li><a href="/tested/<%=req.projectCurrent.name%>/">ROOT</a></li>
+  <%for(var i=0;i<pathArray.length;i++){%>
+	  <%if(i==pathArray.length-1){%>
+	  <li class="active"><%=pathArray[i].name%></li>
+	  <%}else{%>
+	  <li><a href="/tested/<%=req.projectCurrent.name%>/<%=pathArray[i].id%>/"><%=pathArray[i].name%></a></li>
+	  <%}%>
+  <%}%>
 </ol>
 </div>
 
 <div id="actionProject" class="row" >
 		<div class="col-lg-1 text-center">			
-			<a href="/tested/<%=req.projectCurrent.name%>/<%=req.packetId%>/newtest" class="text-center">
+			<a href="/tested/<%=req.projectCurrent.name%>/<%=req.packetId%>/newtest" class="text-center" data-toggle="tooltip" data-placement="bottom" title="Crear Test">
 				<img class="img-responsive" src="/images/newtest.png">				
 			</a>
 		</div>
 		<div class="col-lg-1 text-center">			
-			<a href="/tested/<%=req.projectCurrent.name%>/<%=req.packetId%>/newpacket" id="newPacket" class="text-center">
+			<a href="/tested/<%=req.projectCurrent.name%>/<%=req.packetId%>/newpacket" id="newPacket" class="text-center" data-toggle="tooltip" data-placement="bottom" title="Crear Packete">
 				<img class="img-responsive" src="/images/newpacket.png">				
 			</a>
 		</div>

@@ -12,7 +12,7 @@ var initActionPacket = function(){
 				if(data.status == 0){
 					$('#successAlertNewPacket').css("display",'');
 					$('#textSuccessAlertNewPacket').text("Se creo correctamente el packete");
-					window.location = '/tested/'+projectName;
+					window.location = "/tested/"+projectName+"/"+packetId+"/";
 				}else{
 					$('#errorAlertNewPacket').css("display",'');
 					$('#textErrorAlertNewPacket').text(data.message);
@@ -21,6 +21,11 @@ var initActionPacket = function(){
 			});
         }
     }); 
+	$("#btnCancel").click(function(){		
+		var projectName = $("#newPacketForm").attr("rel");
+		var packetId = Options.packetId;
+		window.location = "/tested/"+projectName+"/"+packetId+"/";
+	});
 }
 
 initActionPacket();

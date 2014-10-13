@@ -20,7 +20,12 @@ module.exports = {
 
   	projectService.contentProject(packetId).then(function(tests){
       req.packetId = packetId;
-  		return res.view({tests:tests});
+      projectService.getPath(packetId).then(function(objPath){
+        req.packetId = packetId;          		  
+        return res.view({tests:tests,pathArray:objPath.pathArray});
+      }).fail(function(err){
+        return res.json(err);
+      })
   	}).fail(function(err){
   		return res.json(err);
   	})
@@ -70,7 +75,7 @@ module.exports = {
     projectService.createPackage(projectId,packetId,packetName).then(function(data){
       return res.json({status:0});
     }).fail(function(err){
-      return res.json({message:"No se pudo crear el paquete"});
+      return res.json(err);
     });
   },
 

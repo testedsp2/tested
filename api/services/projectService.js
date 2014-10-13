@@ -19,31 +19,41 @@ module.exports = {
 			}else{
 				console.info("creando paquete en el projecto "+project.name);
 				var pathPacket = projectService.cprf+"/"+projectId+"/src";
-				projectService.getPath(parentId).then(function(path){
-					console.info(path);
-					pathPacket += path;
-					projectService.createFolder(pathPacket,packageName).then(function(packet){
-						var objTest = {
-							type: "p",
-							name: packageName,
-							descripcion: "",						
-							parentId:parentId,
-							projectId:projectId,
-							project:projectId						
-						}
-						Packet.create(objTest).exec(function(err,cTest){
-							if(err){
-								defer.reject(err);
+				projectService.getPath(parentId).then(function(objPath){
+					console.info(objPath.path);
+					pathPacket += objPath.path;
+					Packet.findOne({parentId:parentId,name:packageName}).exec(function(err,packet){
+						if(err){
+							defer.reject({message: "No se logro crear el paquete"});
+						}else{
+							if(packet){
+								defer.reject({message:"Error ya existe un paquete con ese nombre"});
 							}else{
-								defer.resolve({stats:0});		
+								projectService.createFolder(pathPacket,packageName).then(function(packet){
+									var objTest = {
+										type: "p",
+										name: packageName,
+										descripcion: "",						
+										parentId:parentId,
+										projectId:projectId,
+										project:projectId						
+									}
+									Packet.create(objTest).exec(function(err,cTest){
+										if(err){
+											defer.reject(err);
+										}else{
+											defer.resolve({stats:0});		
+										}
+									});							
+								}).fail(function(err){
+									defer.reject({message: "No se logro crear el paquete"});
+								});								
 							}
-						});							
-					}).fail(function(err){
-						defer.reject({message: "No se logro crear el paquete"});
+						}
 					});
 
 				}).fail(function(err){
-					
+					defer.reject(err);
 				})
 
 			}
@@ -240,9 +250,10 @@ module.exports = {
 		
 		var defer = Q.defer();
 		var path = "";
-		console.info("itemId: "+itemId);
+		
+		console.info("itemId: "+ itemId);
 		if(itemId=="0" || itemId == 0){
-			defer.resolve("/");
+			defer.resolve({path:"/",pathArray:[]});
 		}else{
 			console.info("buscando itemId: "+itemId);
 			Packet.findOne({id:itemId} ).exec(function(err,packet){
@@ -250,15 +261,29 @@ module.exports = {
 					defer.reject("");
 				}else{
 					console.info(packet);
-					projectService.getPath(packet.parentId).then(function(path){
-						console.info("getPath: "+ path);
-						defer.resolve(path+packet.name+"/");
+					projectService.getPath(packet.parentId).then(function(objPath){
+						objPath.path += packet.name+"/"
+						objPath.pathArray.push({id:packet.id,name:packet.name});
+						console.info(objPath);
+						defer.resolve(objPath);
 					}).fail(function(err){
 						defer.reject(err);
 					})
 				}
 			});
 		}
+		return defer.promise;
+	},
+	getPathArray: function(itemId){
+		
+		var defer = Q.defer();
+		projectService.getPath(itemId).then(function(path){
+			var pathArray = []
+
+        	defer.resolve()
+      	}).fail(function(err){
+        	defer.reject(err);
+      	});
 		return defer.promise;
 	}
 };

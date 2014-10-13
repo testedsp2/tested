@@ -30,7 +30,8 @@ var actionsTestsTable = function(){
 	});
 	$("#btnCancelar").click(function(){		
 		var projectName = $("#formTest").attr("rel");
-		window.location = "/tested/"+projectName;
+		var packetId = Options.packetId;
+		window.location = "/tested/"+projectName+"/"+packetId+"/";
 	});
 	
 }
