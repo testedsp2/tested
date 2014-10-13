@@ -143,6 +143,7 @@ module.exports = {
 		return defer.promise;		
 		//fs.createReadStream(tmpPath).pipe(fs.createWriteStream(newPath));
 	},
+
 	createTest: function(projectId,parentId,nameTest,paramsTest){
 		var defer = Q.defer();
 		var projectId = projectId
@@ -153,15 +154,60 @@ module.exports = {
 		tmpl.name= nameTest;
 		var test ="";
 		for (var i = 0; i < tmpl.imports.length; i++) {
-			test += "import "+tmpl.imports[i]+";\n";
+			test += "import "+tmpl.imports[i]+";\n\n";
 		};
-		test += "public class "+ tmpl.name +"{\n";
-		test += "@Test\n";
-		test += "public void "+ tmpl.name +"_test(){\n";
-		test += "WebDriver driver = new FirefoxDriver();\n";
-		test += "WebDriverWait wait = new WebDriverWait(driver,15);\n";
-		test += "driver.get(\""+paramsTest.url+"\");\n";
-		test += "driver.close();\n}\n}";
+
+		test += "public class "+ tmpl.name +"{\n\n";
+		test += "	WebDriver driver;\n";
+		test += "	WebDriverWait wai;\n\n";
+		test += "	@Test\n";
+		test += "	public void "+ tmpl.name +"_test(){\n";
+		test += "		driver = new FirefoxDriver();\n";
+		test += "		wait = new WebDriverWait(driver,15);\n";
+		test += "		driver.get(\""+paramsTest.url+"\");\n";
+
+		for(var i =0; i <paramsTest.selectorFind.length; i++){
+			console.log(paramsTest.selectorFind[i]);
+			if(paramsTest.selectorFind[i] == "class"){
+				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementName[i] +"\")));\n";
+				test += "		driver.findElement(By.className(\""+paramsTest.elementName[i]+"\"))";
+				test = projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[i]);
+
+			}else 
+			if(paramsTest.selectorFind[i] == "id"){
+				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementName[i] +"\")));\n";
+				test += "		driver.findElement(By.id(\""+paramsTest.elementName[i]+"\"))";
+				test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[i]);
+			}else
+			if(paramsTest.selectorFind[i] == "text"){
+				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\")));\n";
+				test += "		driver.findElement(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\"))";
+				test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[i]);
+			}
+		}
+
+		test += "		try{\n"; 
+		for(var i =0; i <paramsTest.selectorFindDesition.length; i++){
+			if(paramsTest.selectorFindDesition[i] == "class"){
+				test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementNameDesition[i] +"\")));\n";	
+			}else
+			if(paramsTest.selectorFindDesition[i] == "id"){
+				test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementNameDesition[i] +"\")));\n";
+			}else
+			if(paramsTest.selectorFindDesition[i] == "text"){
+				test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementNameDesition[i]+"']\")));\n";
+			}
+		}
+		test += "		}catch(Exception e){\n";
+		test += "			Assert.fail(\" MENSAJE DE ERROR \" + e.getMessage());\n";
+		test += "		}\n";
+		test += "	}\n\n"
+
+		test += "	@AfterClass\n";
+		test += "	public void closeDriver(){\n";
+		test += "		driver.close();\n";
+		test += "	}\n";
+		test += "}";
 
 		Packet.findOne({id:parentId}).exec(function(err,packet){
 			if(err){
@@ -201,6 +247,17 @@ module.exports = {
 		return defer.promise;	
 	},
 
+	actionElement: function(test,action,textwrite){
+		console.log(action);
+		if(action == "click"){
+			test += ".click();\n";
+		}else
+		if(action == "write"){
+			test += ".sendKeys(\""+textwrite+"\");\n";
+		}
+		return test;
+	},
+
 	createFile: function(srcPath){
 		var defer = Q.defer();
 		fs.open(srcPath,"w+",function(err,file){
@@ -213,6 +270,7 @@ module.exports = {
 		});
 		return defer.promise;				
 	},
+
 	writeFile: function(name,text){
 		var defer = Q.defer();
 		fs.writeFile(name,text,function(err,file){
