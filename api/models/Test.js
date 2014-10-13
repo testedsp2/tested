@@ -7,8 +7,13 @@
 
 module.exports = {
     connection: 'someMongodbServer',
+    tableName: 'items',
     schema: false,    
     attributes: {
+       type: {
+            type: 'string',
+            required: true
+        },
         name: {
             type: 'string',
             required: true

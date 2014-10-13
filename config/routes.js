@@ -51,15 +51,33 @@ module.exports.routes = {
     controller: 'ProjectController',
     action: 'index'
   },
-   '/tested/:projectName/newtest':{
+
+  '/tested/:projectName/:packetId':{
+    controller: 'ProjectController',
+    action: 'index'
+  },
+  
+  '/tested/:projectName/:packetId/newtest':{
     controller: 'ProjectController',
     action: 'newtest'
-  },
- 
-  '/tested/:projectName/create-test':{
+  },  
+
+  '/tested/:projectName/:packetId/create-test':{
     controller: 'ProjectController',
     action: 'createTest'
   },
+
+  '/tested/:projectName/:packetId/newpacket':{
+    controller: 'ProjectController',
+    action: 'newpacket'
+  },
+
+  'post /tested/:projectName/:packetId/createPacket':{
+    controller: 'ProjectController',
+    action: 'createPacket'
+  },
+
+
 
   /***************************************************************************
   *                                                                          *

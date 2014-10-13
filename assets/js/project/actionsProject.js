@@ -1,0 +1,5 @@
+var initActionProjects = function(){
+	
+}
+
+initActionProjects();

@@ -11,17 +11,40 @@ module.exports = {
     		instrunctions:[],  
   		}  
 	},
-	createPackage: function(packageName,projectId){
+	createPackage: function(projectId,parentId,packageName){
 		var defer = Q.defer();
 		Project.findOne({id:projectId}).exec(function(err,project){
 			if(err){
 				defer.reject({message: "No se logro crear el paquete"});
 			}else{
-				projectService.createFolder(projectService.cprf+"/"+projectId+"/"+packageName).then(function(packet){
-					defer.resolve({status: 0});
+				console.info("creando paquete en el projecto "+project.name);
+				var pathPacket = projectService.cprf+"/"+projectId+"/src";
+				projectService.getPath(parentId).then(function(path){
+					console.info(path);
+					pathPacket += path;
+					projectService.createFolder(pathPacket,packageName).then(function(packet){
+						var objTest = {
+							type: "p",
+							name: packageName,
+							descripcion: "",						
+							parentId:parentId,
+							projectId:projectId,
+							project:projectId						
+						}
+						Packet.create(objTest).exec(function(err,cTest){
+							if(err){
+								defer.reject(err);
+							}else{
+								defer.resolve({stats:0});		
+							}
+						});							
+					}).fail(function(err){
+						defer.reject({message: "No se logro crear el paquete"});
+					});
+
 				}).fail(function(err){
-					defer.reject({message: "No se logro crear el paquete"});
-				});
+					
+				})
 
 			}
 		});		
@@ -120,10 +143,11 @@ module.exports = {
 		return defer.promise;		
 		//fs.createReadStream(tmpPath).pipe(fs.createWriteStream(newPath));
 	},
-	createTest: function(projectId,nameTest,paramsTest){
+	createTest: function(projectId,parentId,nameTest,paramsTest){
 		var defer = Q.defer();
 		var projectId = projectId
 		var pathProject = projectService.cprf+"/"+projectId+"/src/"
+		
 		var tmpl = projectService.templateTest;
 		var time = 15;
 		tmpl.name= nameTest;
@@ -138,29 +162,41 @@ module.exports = {
 		test += "WebDriverWait wait = new WebDriverWait(driver,15);\n";
 		test += "driver.get(\""+paramsTest.url+"\");\n";
 		test += "driver.close();\n}\n}";
-		projectService.createFile(pathProject+tmpl.name+".java").then(function(file){
-			projectService.writeFile(pathProject+tmpl.name+".java",test).then(function(data){
-				var objTest = {
-					name: nameTest,
-					descripcion: "",
-					resultado:"",
-					parentId:0,
-					projectId:projectId,
-					project:projectId
+
+		Packet.findOne({id:parentId}).exec(function(err,packet){
+			if(err){
+				defer.reject(err);
+			}else{
+				if(packet){
+					pathProject += packet.name +"/";
 				}
-				Test.create(objTest).exec(function(err,cTest){
-					if(err){
+				projectService.createFile(pathProject+tmpl.name+".java").then(function(file){
+					projectService.writeFile(pathProject+tmpl.name+".java",test).then(function(data){
+						var objTest = {
+							type: "t",
+							name: nameTest,
+							descripcion: "",
+							resultado:"",
+							parentId:parentId,
+							projectId:projectId,
+							project:projectId
+						}
+						Test.create(objTest).exec(function(err,cTest){
+							if(err){
+								defer.reject(err);
+							}else{
+								defer.resolve({stats:0});		
+							}
+						});
+						
+					}).fail(function(err){
 						defer.reject(err);
-					}else{
-						defer.resolve({stats:0});		
-					}
+					});
+				}).fail(function(err){
+					defer.reject(err);
 				});
 				
-			}).fail(function(err){
-				defer.reject(err);
-			});
-		}).fail(function(err){
-			defer.reject(err);
+			}
 		});
 		return defer.promise;	
 	},
@@ -200,4 +236,29 @@ module.exports = {
 		});
 		return defer.promise;
 	},
+	getPath: function(itemId){
+		
+		var defer = Q.defer();
+		var path = "";
+		console.info("itemId: "+itemId);
+		if(itemId=="0" || itemId == 0){
+			defer.resolve("/");
+		}else{
+			console.info("buscando itemId: "+itemId);
+			Packet.findOne({id:itemId} ).exec(function(err,packet){
+				if(err){
+					defer.reject("");
+				}else{
+					console.info(packet);
+					projectService.getPath(packet.parentId).then(function(path){
+						console.info("getPath: "+ path);
+						defer.resolve(path+packet.name+"/");
+					}).fail(function(err){
+						defer.reject(err);
+					})
+				}
+			});
+		}
+		return defer.promise;
+	}
 };

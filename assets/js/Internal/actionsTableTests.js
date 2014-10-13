@@ -17,8 +17,9 @@ var actionsTestsTable = function(){
 
 	$("#btnSaveGenerateTest").click(function(){
 		var params = $("#formTest").serializeArray();
-		var projectName = $("#formTest").attr("rel");
-		$.post("/tested/"+projectName+"/create-test",params,function(data){
+		var projectName = $("#formTest").attr("rel");		
+		var packetId = Options.packetId;
+		$.post("/tested/"+projectName+"/"+packetId+"/create-test",params,function(data){
 			if(data==200){
 				alert("test creado");
 				window.location = "/tested/"+projectName;

@@ -48,7 +48,10 @@ module.exports = function(req, res, next) {
         if(req.options.controller == "project"){
           projectCurrent(req.user.id).then(function(proj){
             req.projectCurrent = proj;
-            console.info(req.projectCurrent);
+            req.packetId = req.param("packetId");
+            if(req.packetId != undefined){
+              req.packetId = req.packetId.toString();
+            }            
             projectsList(req.user.id);  
           }).fail(function(err){
             res.status(500);

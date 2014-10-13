@@ -7,8 +7,31 @@
 
 module.exports = {
 
-  attributes: {
+ connection: 'someMongodbServer',
+    schema: false,
+    tableName: 'items',  
+    attributes: {
+    	type: {
+    		type: 'string',
+    		required: true
+    	},
+        name: {
+            type: 'string',
+            required: true
+        },        
+        description:{
+            type: 'string'
+        },        
+        parentId:{
+            type: 'string'
+        },
 
-  }
+        projectId:{
+            type: 'string'
+        },
+        project: {
+            model: 'project'
+        }    
+    }
 };
 

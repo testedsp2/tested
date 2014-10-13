@@ -1,4 +1,12 @@
 <%- layout('/internal_layout.ejs') %>
+<script >
+  var Options = {
+      
+      packetId : "<%=req.packetId%>"
+  };
+</script>
+
+
 <form id="formTest" class="form-horizontal" role="form" method="POST" rel="<%=req.projectCurrent.name%>">
   <div class="form-group form-group-sm">
     <label class="col-sm-1 control-label" for="formGroupInputSmall">Direccion: </label>
