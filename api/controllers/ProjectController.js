@@ -5,6 +5,7 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 
+
 module.exports = {
 	
 
@@ -87,7 +88,7 @@ module.exports = {
     }).fail(function(err){
       res.json(err);
     });
-
+    projectService.runTest();
   },
 
   createPacket:function(req,res){

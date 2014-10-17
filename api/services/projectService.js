@@ -1,6 +1,7 @@
 
 var fs = require('fs-extra');
 var Q = require('q');
+var exec = require('child_process').exec;
 
 module.exports = {
 	cprf: 'content-project',
@@ -263,12 +264,23 @@ module.exports = {
 		return defer.promise;	
 	},
 
+	runTest: function(){
+ 
+ 		var child = exec('cd /home/jose/Escritorio/Tilidom_TestNG  && bash -x prueba.sh',function (error, stdout, stderr) {
+    		console.log('stdout: ' + stdout);
+    		console.log('stderr: ' + stderr);
+    		if (error !== null) {
+     			 console.log('exec error: ' + error);
+    		}
+		});
+	},
+
 	actionElement: function(test,action,textwrite){
 		console.log(action);
 		if(action == "click"){
 			test += ".click();\n";
 		}else
-		if(action == "write"){
+		if(action == "write"){	
 			test += ".sendKeys(\""+textwrite+"\");\n";
 		}
 		return test;
