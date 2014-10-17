@@ -20,10 +20,10 @@ module.exports = {
 			if(err){
 				defer.reject({message: "No se logro crear el paquete"});
 			}else{
-				console.info("creando paquete en el projecto "+project.name);
+				//console.info("creando paquete en el projecto "+project.name);
 				var pathPacket = projectService.cprf+"/"+projectId+"/src";
 				projectService.getPath(parentId).then(function(objPath){
-					console.info(objPath.path);
+					//console.info(objPath.path);
 					pathPacket += objPath.path;
 					Packet.findOne({parentId:parentId,name:packageName,projectId:projectId}).exec(function(err,packet){
 						if(err){
@@ -79,7 +79,7 @@ module.exports = {
 			Q.all(arrayFolders).then(function(data){				
 				projectService.listFiles("libs").then(function(files){					
 					var pathlibs = path+"/libs/";
-					console.info(pathlibs);
+					//console.info(pathlibs);
 					var symLinkArray = [];
 					for (var i = 0; i < files.length; i++) {
 						//symLinkArray.push(projectService.creatSymbolicLink("libs/"+files[i],pathlibs+files[i]))	
@@ -100,19 +100,19 @@ module.exports = {
 						});	
 
 					}).fail(function(err){
-						console.info("createProjectRoot: No se logro crear enlaces simbolicos");
+						//console.info("createProjectRoot: No se logro crear enlaces simbolicos");
 						defer.reject({message:"Error al inicializar el proyecto"});	
 					});			
 			    }).fail(function(err){
-			    	console.info("createProjectRoot: No se logro obtener el listado de archivos");
+			    	//console.info("createProjectRoot: No se logro obtener el listado de archivos");
 			      	defer.reject({message:"Error al inicializar el proyecto"});
 			    });
 			}).fail(function(err){
-				console.info("createProjectRoot: No se logro crear el folder libs");
+				//console.info("createProjectRoot: No se logro crear el folder libs");
 				defer.reject({message:"Error al inicializar el proyecto"});
 			});
 		}).fail(function(err){
-			console.info("createProjectRoot: No se logro crear los folders");
+			//console.info("createProjectRoot: No se logro crear los folders");
 			defer.reject({message:"Error al inicializar el proyecto"});
 		});
 		
@@ -191,7 +191,7 @@ module.exports = {
 		test += "		driver.get(\""+paramsTest.url+"\");\n";
 
 		for(var i =0; i <paramsTest.selectorFind.length; i++){
-			console.log(paramsTest.selectorFind[i]);
+			//console.log(paramsTest.selectorFind[i]);
 			if(paramsTest.selectorFind[i] == "class"){
 				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementName[i] +"\")));\n";
 				test += "		driver.findElement(By.className(\""+paramsTest.elementName[i]+"\"))";
@@ -242,7 +242,7 @@ module.exports = {
 					defer.reject({message:"Error ya existe un test con ese nombre"});
 				}else{
 					projectService.getPath(parentId).then(function(objPath){
-						console.info(objPath.path);
+						//console.info(objPath.path);
 						pathProject += objPath.path;						
 						projectService.createFile(pathProject+tmpl.name+".java").then(function(file){
 							projectService.writeFile(pathProject+tmpl.name+".java",test).then(function(data){
@@ -326,6 +326,59 @@ module.exports = {
 		});
 		return defer.promise;				
 	},
+
+	deleteItems : function(items){
+		var defer = Q.defer();
+		var deleteItemQArray = [];
+		for (var i = 0; i < items.length; i++) {
+			deleteItemQArray.push(projectService.deleteItem(items[i]));
+		};
+		Q.all(deleteItemQArray).then(function(deletedItems){
+			defer.resolve({status:0});
+		}).fail(function(err){
+			defer.reject({message: "Error: item no encontrado"});
+		});
+		return defer.promise;
+	},
+	deleteItem : function(itemId){
+		var defer = Q.defer();
+		console.info("entro "+itemId);
+		Test.findOne({id:itemId}).exec(function(err,item){
+			if(err){
+				defer.reject(err);
+			}else{
+				console.info("entro "+itemId);
+				if(item){			
+					console.info(item);	
+					projectService.getPath(item.parentId).then(function(objPath){
+						var path = projectService.cprf+"/"+item.projectId+"/src"+objPath.path + item.name+".java";
+						console.info("eliminando "+path);
+						fs.unlink(path,function(err,deletedItem){
+							if(err){
+								console.info(err)
+								defer.reject({message: "Error: item no encontrado"});
+							}else{
+								Test.destroy({id:item.id}).exec(function(err,delItem){
+									if(err){
+										defer.reject({message: "Error: item no encontrado"});
+									}else{
+										defer.resolve({status:0});
+									}
+								})
+							}
+						});				
+					}).fail(function(err){
+						console.info(err.stack);
+						defer.reject({message: "Error: item no encontrado"});	
+					});
+
+				}else{
+					defer.reject({message: "Error: item no encontrado"});
+				}
+			}
+		});
+		return defer.promise;					
+	},
 	contentProject: function(parentId,projectId){
 		var defer = Q.defer();
 		Test.find({parentId:parentId,projectId:projectId}).exec(function(err,tests){
@@ -342,20 +395,20 @@ module.exports = {
 		var defer = Q.defer();
 		var path = "";
 		
-		console.info("itemId: "+ itemId);
+		//console.info("itemId: "+ itemId);
 		if(itemId=="0" || itemId == 0){
 			defer.resolve({path:"/",pathArray:[]});
 		}else{
-			console.info("buscando itemId: "+itemId);
-			Packet.findOne({id:itemId} ).exec(function(err,packet){
+			//console.info("buscando itemId: "+itemId);
+			Packet.findOne({id:itemId}).exec(function(err,packet){
 				if(err){
-					defer.reject("");
+					defer.reject(err);
 				}else{
-					console.info(packet);
+					//console.info(packet);
 					projectService.getPath(packet.parentId).then(function(objPath){
-						objPath.path += packet.name+"/"
+						objPath.path += packet.name+"/";
 						objPath.pathArray.push({id:packet.id,name:packet.name});
-						console.info(objPath);
+						//console.info(objPath);
 						defer.resolve(objPath);
 					}).fail(function(err){
 						defer.reject(err);
