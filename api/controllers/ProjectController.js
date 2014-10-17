@@ -116,9 +116,18 @@ module.exports = {
   },
 
   runTest: function(req,res){
-    var testId = req.param("testId");
-    console.info(testId);
-    res.json(testId);
+    var testIds = req.param("testId");
+    if(typeof testIds != 'object'){
+      testIds = [testIds];
+    }
+    var projectId = req.projectCurrent.id;
+    console.log(projectId);
+    projectService.runTest(testIds,projectId).then(function(data){
+      res.json(data);
+    }).fail(function(err){
+      res.json(err);
+    });
+    
   },
   
   deleteTest: function(req,res){

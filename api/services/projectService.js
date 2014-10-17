@@ -189,24 +189,27 @@ module.exports = {
 		test += "		driver = new FirefoxDriver();\n";
 		test += "		wait = new WebDriverWait(driver,15,1);\n";
 		test += "		driver.get(\""+paramsTest.url+"\");\n";
-
+        var cont = 0;
 		for(var i =0; i <paramsTest.selectorFind.length; i++){
 			//console.log(paramsTest.selectorFind[i]);
 			if(paramsTest.selectorFind[i] == "class"){
 				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementName[i] +"\")));\n";
 				test += "		driver.findElement(By.className(\""+paramsTest.elementName[i]+"\"))";
-				test = projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[i]);
+				test = projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
 
 			}else 
 			if(paramsTest.selectorFind[i] == "id"){
 				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementName[i] +"\")));\n";
 				test += "		driver.findElement(By.id(\""+paramsTest.elementName[i]+"\"))";
-				test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[i]);
+				test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
 			}else
 			if(paramsTest.selectorFind[i] == "text"){
 				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\")));\n";
 				test += "		driver.findElement(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\"))";
-				test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[i]);
+				test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
+			}
+			if(paramsTest.selectorAction[i] == "write"){
+				cont++;
 			}
 		}
 
@@ -279,15 +282,54 @@ module.exports = {
 		return defer.promise;	
 	},
 
-	runTest: function(){
- 
- 		var child = exec('cd /home/jose/Escritorio/Tilidom_TestNG  && bash -x prueba.sh',function (error, stdout, stderr) {
-    		console.log('stdout: ' + stdout);
-    		console.log('stderr: ' + stderr);
-    		if (error !== null) {
-     			 console.log('exec error: ' + error);
-    		}
+	createXMLFile: function(testIds,projectId){
+		var defer = Q.defer();
+		var pathProject = projectService.cprf+"/"+projectId+"/src";
+		var pathRun = projectService.cprf+"/"+projectId;
+		var testXML = "";
+		testXML += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+		testXML += "<!DOCTYPE suite SYSTEM \"http://testng.org/testng-1.0.dtd\">\n";
+		testXML += "<suite name=\"Tested\" parallel=\"false\">\n";
+		testXML += "<test name=\"default\">\n<classes>\n";
+		Test.find({where:{id:testIds}}).exec(function(err,tests){
+			if(err){
+				console.log(err);
+				defer.reject({message:"NO se pudo crear el archivo xml"});
+			}else{
+				if(tests){
+					for (var i = 0; i < testIds.length; i++) {
+						testXML += "<class name=\"" + tests[i].name + "\"/>\n";
+					}
+					testXML += "</classes>\n";
+					testXML += "</test>\n";
+					testXML += "</suite>\n";
+					projectService.writeFile(pathProject + "/testng.xml",testXML).then(function(file){
+						defer.resolve(pathRun);
+					}).fail(function(err){
+						console.log(err);
+						defer.reject({message:"NO se pudo crear el archivo xml"});
+					});
+				}
+			}
 		});
+		return defer.promise;
+	},
+
+	runTest: function(testIds,projectId){
+		var defer = Q.defer();
+ 		projectService.createXMLFile(testIds, projectId).then(function(pathRun){
+ 			var child = exec('cd ' + pathRun + ' && ant',function (err, stdout, stderr) {
+    		if (err) {
+    			console.log(err);
+     			defer.reject({message:"No se logro correr el test "});
+    		}
+    		defer.resolve({status:0});
+		});
+ 		}).fail(function(err){
+ 			console.log(err);
+			defer.reject({message:"No se pudo crear el archivo xml"});
+ 		});
+ 		return defer.promise;
 	},
 
 	actionElement: function(test,action,textwrite){
