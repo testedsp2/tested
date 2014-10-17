@@ -6,12 +6,14 @@ var exec = require('child_process').exec;
 module.exports = {
 	cprf: 'content-project',
 	templateTest : {
-  		imports: ["org.testng.*","org.openqa.selenium.*"],
+  		imports: ["org.openqa.selenium.By","org.openqa.selenium.WebElement"," org.openqa.selenium.support.ui.ExpectedConditions",
+  		"org.openqa.selenium.support.ui.WebDriverWait","org.testng.Assert","org.testng.annotations.*","org.openqa.selenium.WebDriver","org.openqa.selenium.firefox.FirefoxDriver"],
   		name:"",
   		functionTest: {    		
     		instrunctions:[],  
   		}  
 	},
+
 	createPackage: function(projectId,parentId,packageName){
 		var defer = Q.defer();
 		Project.findOne({id:projectId}).exec(function(err,project){
@@ -66,7 +68,8 @@ module.exports = {
 		var defer = Q.defer();
 		//var nameRoot = projectID + "_" + projectName;
 		var nameRoot = projectID;
-		var path = projectService.cprf+"/"+nameRoot;		
+		var path = projectService.cprf+"/"+nameRoot;	
+
 		projectService.createFolder(path,"").then(function(data){
 			var arrayFolders = [
 				projectService.createFolder(path,"src"),
@@ -83,7 +86,19 @@ module.exports = {
 						symLinkArray.push(projectService.copyFile("libs/"+files[i],pathlibs+files[i]))	
 					};	
 					Q.all(symLinkArray).then(function(filesArray){
-						defer.resolve({status:0});
+
+						projectService.copyFile("testng-results.xsl",path + "/src/testng-results.xsl").then(function(data){
+							projectService.copyFile("build.xml",path + "/build.xml").then(function(data){
+								defer.resolve({status:0});
+							}).fail(function(err){
+								console.info(err);
+								defer.reject({message:"Error al inicializar el proyecto"});	
+							});	
+						}).fail(function(err){
+							console.info(err);
+							defer.reject({message:"Error al inicializar el proyecto"});	
+						});	
+
 					}).fail(function(err){
 						console.info("createProjectRoot: No se logro crear enlaces simbolicos");
 						defer.reject({message:"Error al inicializar el proyecto"});	
@@ -128,6 +143,7 @@ module.exports = {
 		});
 		return defer.promise;	
 	},
+
 	creatSymbolicLink: function(srcPath,dstPath){
 		var defer = Q.defer();
 		fs.symlink(srcPath,dstPath,'file',function(err,sl){
@@ -136,7 +152,6 @@ module.exports = {
 			}else{				
 				defer.resolve(sl);
 			}
-
 		});
 		return defer.promise;		
 	},
@@ -172,7 +187,7 @@ module.exports = {
 		test += "	@Test\n";
 		test += "	public void "+ tmpl.name +"_test(){\n";
 		test += "		driver = new FirefoxDriver();\n";
-		test += "		wait = new WebDriverWait(driver,15);\n";
+		test += "		wait = new WebDriverWait(driver,15,1);\n";
 		test += "		driver.get(\""+paramsTest.url+"\");\n";
 
 		for(var i =0; i <paramsTest.selectorFind.length; i++){

@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<project name="Tested" default="main" basedir=".">
+  <!-- Sets variables which can later be used. -->
+  <!-- The value of a property is accessed via ${} -->
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="bin.dir" value="${basedir}/bin"/>
+	<property name="libs.dir" value="${basedir}/libs"/>
+	<property name="testng_output.dir" value="${src.dir}/testng_output"/>
+	
+	<path id="master-classpath">
+		<pathelement location="${bin.dir}" />
+		<fileset dir="${libs.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+	<!-- Initialize -->
+	<target name="init">
+		<delete dir="${bin.dir}"/>
+		<delete dir="${testng_output}"/>
+		<delete dir="${src.dir}/testng-xslt"/>
+		<mkdir dir="${bin.dir}"/>
+		<mkdir dir="${src.dir}/testng-xslt"/>
+		<mkdir dir="${testng_output.dir}"/>    
+	</target>
+	
+	<!-- Compile-->
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${bin.dir}" classpathref="master-classpath" includeantruntime="false">
+			<compilerarg value="-Xlint:unchecked"/>
+		</javac> 
+	</target>
+	
+	
+	 <!-- Config for testng -->
+	 <taskdef name="testng" classname="org.testng.TestNGAntTask">
+	 	<classpath>
+	 		<pathelement location="${basedir}/libs/testng-6.8.5.jar"/>
+	 	</classpath>
+	 </taskdef>
+	
+	 <!-- execute testng after compile, then generate report -->
+	 <target name ="Execute" depends="compile">
+	 	<!-- config testng -->
+	 	<testng outputdir="${testng_output.dir}" classpathref="master-classpath" useDefaultListeners="true">
+	 		<!-- execute testcase follow testng.xml -->
+	 		<xmlfileset dir="${src.dir}" includes="testng.xml"/>
+	 		<!-- generate report title -->
+	 		<sysproperty key="org.uncommons.reportng.title" value="Tests"/>
+	 		<sysproperty key="org.uncommons.reportng.escape-output" value="false"/>
+	 	</testng>
+	 </target>
+	
+	<!-- grafics -->
+	 <target name="main" depends="Execute">
+	 	<xslt in="${testng_output.dir}/testng-results.xml" style="${src.dir}/testng-results.xsl" out="${src.dir}/testng-xslt/index.html">       
+	 		<param expression="${src.dir}/testng-xslt/" name="testNgXslt.outputDir" />
+	 		<param expression="true" name="testNgXslt.sortTestCaseLinks" />
+	 		<param expression="FAIL,SKIP,PASS,CONF,BY_CLASS" name="testNgXslt.testDetailsFilter" />
+	 		<param expression="true" name="testNgXslt.showRuntimeTotals" />
+	 		<classpath refid="master-classpath"/>
+	 	</xslt>
+	 </target>
+</project> 

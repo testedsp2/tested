@@ -120,6 +120,7 @@ module.exports = {
     console.info(testId);
     res.json(testId);
   },
+  
   deleteTest: function(req,res){
     var testId = req.param("testId");
     console.info(testId);
