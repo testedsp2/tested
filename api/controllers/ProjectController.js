@@ -121,9 +121,16 @@ module.exports = {
     res.json(testId);
   },
   deleteTest: function(req,res){
-    var testId = req.param("testId");
-    console.info(testId);
-    res.json(testId);
+    var testIds = req.param("testId");
+    if(typeof testIds != 'object')
+      testIds = [testIds];
+
+    projectService.deleteItems(testIds).then(function(status){
+      return res.json({status:0});  
+    }).fail(function(err){
+      return res.json({massage:"Error al eliminar"});  
+    });    
+    
   }
 
 };

@@ -34,7 +34,12 @@ var initActionProjects = function(){
 	});
 	$("#deleteTests").on("click",function(){
 		execAction("/tested/"+projectName+"/"+packetId+"/deleteTest",function(data){
-
+			if(data.status == 0){
+				alert("Objeto Eliminado");
+				location.reload();
+			}else{
+				alert(data.message);
+			}
 		});
 	});
 
@@ -45,17 +50,23 @@ var initActionProjects = function(){
 				value: testId
 			}];
 		$.post("/tested/"+projectName+"/"+packetId+"/runTest",params,function(data){
-
+			
 		});
 	});
 	$(".btnDeleteTest").on("click",function(){
-		var testId = $(this).attr("rel");
+		var test = $(this);
+		var testId = $(test).attr("rel");
 		var params = [{
 				name:"testId",
 				value: testId
 			}];
 		$.post("/tested/"+projectName+"/"+packetId+"/deleteTest",params,function(data){
-
+			if(data.status == 0){
+				alert("Objeto Eliminado");
+				location.reload();
+			}else{
+				alert(data.message);
+			}
 		});
 	});
 
