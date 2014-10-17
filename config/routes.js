@@ -76,7 +76,15 @@ module.exports.routes = {
     controller: 'ProjectController',
     action: 'createPacket'
   },
+  'post /tested/:projectName/:packetId/runTest':{
+    controller: 'ProjectController',
+    action: 'runTest'
+  },
 
+  'post /tested/:projectName/:packetId/deleteTest':{
+    controller: 'ProjectController',
+    action: 'deleteTest'
+  },
 
 
   /***************************************************************************

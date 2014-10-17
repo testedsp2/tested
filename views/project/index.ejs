@@ -1,5 +1,24 @@
 <%- layout('/internal_layout.ejs') %>
-<div class="row" >
+<style>
+	.checkFile {
+		float: left !important;
+	}
+	.btnFile {
+		float: right !important;	
+	}
+
+
+}
+</style>
+
+<script >
+  var Options = {
+      
+      packetId : "<%=req.packetId%>"
+  };
+</script>
+
+<div class="row" id="containerProject" rel="<%=req.projectCurrent.name%>">
 <ol class="breadcrumb">
   <li><a href="/tested/<%=req.projectCurrent.name%>/">ROOT</a></li>
   <%for(var i=0;i<pathArray.length;i++){%>
@@ -23,6 +42,18 @@
 				<img class="img-responsive" src="/images/newpacket.png">				
 			</a>
 		</div>
+
+		<div class="col-lg-1 text-center">			
+			<a href="#" id="runTests" class="text-center" data-toggle="tooltip" data-placement="bottom" title="Ejecutar">
+				<img class="img-responsive" src="/images/ejecutar.jpeg">				
+			</a>
+		</div>
+
+		<div class="col-lg-1 text-center">			
+			<a href="#" id="deleteTests" class="text-center" data-toggle="tooltip" data-placement="bottom" title="Eliminar">
+				<img class="img-responsive" src="/images/eliminar.jpeg">				
+			</a>
+		</div>
 </div>
 
 
@@ -30,18 +61,30 @@
 	<%for(var i=0;i<tests.length;i++){%>
 	<div class="col-lg-2 text-center">			
 		<%if(tests[i].type == "t"){%>
+			<input type="checkbox" class="checkFile" rel="<%=tests[i].id%>">
+			<div class="btn-group btnFile">
+			  <button type="button" class="btn btn-default dropdown-toggle " data-toggle="dropdown"><span class="caret"></span></button>
+			  <ul class="dropdown-menu" role="menu">
+			    <li class="btnRunTest" rel="<%=tests[i].id%>"><a href="#" >Ejecutar</a></li>
+			    <li class="btnDeleteTest" rel="<%=tests[i].id%>"><a href="#" >Eliminar</a></li>			    			    
+			  </ul>					
+			 </div>
 			<a href="#" class="text-center">
+
 					<img class="img-responsive" src="/images/test.png">									
-				<%=tests[i].name%>
+				
 			</a>
+			<%=tests[i].name%>
 		<%}else%>
 		<%if(tests[i].type == "p"){%>
 			<a href="/tested/<%=req.projectCurrent.name%>/<%=tests[i].id%>" class="text-center">					
 					<img class="img-responsive" src="/images/packet.png">				
-				<%=tests[i].name%>
+				
 			</a>
+			<%=tests[i].name%>
 		<%}%>
 	</div>
 	<%}%>
 </div>
 
+<script src="/js/project/actionsProject.js"></script>

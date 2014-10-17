@@ -18,7 +18,7 @@ module.exports = {
   	   packetId = "0";
     }
 
-  	projectService.contentProject(packetId).then(function(tests){
+  	projectService.contentProject(packetId,req.projectCurrent.id).then(function(tests){
       req.packetId = packetId;
       projectService.getPath(packetId).then(function(objPath){
         req.packetId = packetId;          		  
@@ -113,5 +113,17 @@ module.exports = {
   		return res.json(err);
   	})
   },
+
+  runTest: function(req,res){
+    var testId = req.param("testId");
+    console.info(testId);
+    res.json(testId);
+  },
+  deleteTest: function(req,res){
+    var testId = req.param("testId");
+    console.info(testId);
+    res.json(testId);
+  }
+
 };
 
