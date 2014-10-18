@@ -15,7 +15,7 @@ module.exports = {
 	},
 
 	createPackage: function(projectId,parentId,packageName){
-		var defer = Q.defer();
+		var defer = Q.defer(); 
 		Project.findOne({id:projectId}).exec(function(err,project){
 			if(err){
 				defer.reject({message: "No se logro crear el paquete"});
@@ -283,6 +283,7 @@ module.exports = {
 	},
 
 	createXMLFile: function(testIds,projectId){
+		
 		var defer = Q.defer();
 		var pathProject = projectService.cprf+"/"+projectId+"/src";
 		var pathRun = projectService.cprf+"/"+projectId;

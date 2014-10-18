@@ -88,7 +88,6 @@ module.exports = {
     }).fail(function(err){
       res.json(err);
     });
-    projectService.runTest();
   },
 
   createPacket:function(req,res){
