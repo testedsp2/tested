@@ -104,6 +104,39 @@ module.exports = {
       return res.json(err);
     });
   },
+  dynamicTree:function(req,res){
+    var packetId = req.param("packetId");
+    var projectId = req.projectCurrent.id;
+    projectService.dynamicTree(packetId,projectId).then(function(children){
+      res.json(children);  
+    }).fail(function(err){
+      return res.json(err);
+    })
+    
+  },
+
+  getTree: function(req,res){
+    var packetId = req.param("packetId");
+    var projectId = req.projectCurrent.id;
+    projectService.targetId = packetId;
+    projectService.getTree(packetId,projectId).then(function(children){
+      res.json(children);  
+    }).fail(function(err){
+      return res.json(err);
+    })
+  },
+
+  getPath:function(req,res){
+    var packetId = req.param("packetId");
+    if(packetId == undefined){
+       packetId = "0";
+    }
+    projectService.getPath(packetId).then(function(objPath){                    
+        return res.json(objPath);
+      }).fail(function(err){
+        return res.json(err);
+      })
+  },
 
   contentProject:function(req,res){
   	var packetId = req.param("packetId");

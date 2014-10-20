@@ -86,6 +86,20 @@ module.exports.routes = {
     action: 'deleteTest'
   },
 
+  'post /tested/:projectName/:packetId/dynamicTree':{
+    controller: 'ProjectController',
+    action: 'dynamicTree'
+  },
+
+  'post /tested/:projectName/:packetId/getPath':{
+    controller: 'ProjectController',
+    action: 'getPath'
+  },
+  'post /tested/:projectName/:packetId/getTree':{
+    controller: 'ProjectController',
+    action: 'getTree'
+  },
+
 
   /***************************************************************************
   *                                                                          *

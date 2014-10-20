@@ -13,7 +13,8 @@ module.exports = {
     		instrunctions:[],  
   		}  
 	},
-
+	targetId : "",
+	tree: [],
 	createPackage: function(projectId,parentId,packageName){
 		var defer = Q.defer(); 
 		Project.findOne({id:projectId}).exec(function(err,project){
@@ -422,6 +423,105 @@ module.exports = {
 		});
 		return defer.promise;					
 	},
+	getTree:function(parentId,projectId){
+		var defer = Q.defer();				
+		if(parentId=="0" || parentId == 0 || parentId == undefined){
+			projectService.tree = [{
+						title    : "root",
+	            		isFolder : true,
+	            		isLazy   : true,
+	            		key      : "0",
+	            		expand   : true,
+	            		focus    : projectService.targetId == parentId,
+	            		active   : projectService.targetId == parentId,
+	            		activate : projectService.targetId == parentId,
+	            		select : projectService.targetId == parentId,
+	            		children : []
+            		}];
+			defer.resolve(projectService.tree[0]);
+		}else{
+			//console.info("buscando itemId: "+itemId);
+			Packet.findOne({id:parentId}).exec(function(err,packet){
+				if(err){
+					defer.reject(err);
+				}else{
+					//console.info(packet);
+					projectService.getTree(packet.parentId,projectId).then(function(objTree){						
+						projectService.dynamicTree(objTree.key,projectId).then(function(children){
+						    objTree.children = children;
+						    var index = findInArrayService.findInArray(objTree.children,"key",parentId)
+					    	if(projectService.targetId == parentId){					    		
+					    		projectService.dynamicTree(parentId,projectId).then(function(children){
+					    			objTree.children[index].focus = projectService.targetId == parentId;
+					    			objTree.children[index].active = projectService.targetId == parentId;
+					    			objTree.children[index].activate = projectService.targetId == parentId;
+					    			objTree.children[index].select = projectService.targetId == parentId;
+					    			objTree.children[index].children = children;
+					    			defer.resolve(projectService.tree);					    			
+					    		}).fail(function(err){
+							    	defer.reject(err);
+							    });	
+					    	}else{		
+					    		
+					    		defer.resolve(objTree.children[index]);
+					    	} 					    	
+					    }).fail(function(err){
+					    	defer.reject(err);
+					    });						
+					}).fail(function(err){
+						console.info(err);
+						defer.reject(err);
+					});
+				}
+			});
+		}
+		return defer.promise;
+	},
+	dynamicTree: function(parentId,projectId){
+		var defer = Q.defer();
+		Packet.find({parentId:parentId,projectId:projectId,type:'p'}).exec(function(err,packets){
+			if(err){
+				defer.reject(err);
+			}else{
+				var children = [];	
+				//console.info(packets);
+				if(packets.length>0){
+					var iterativeFor = function(i){
+						Packet.find({parentId:packets[i].id,projectId:projectId,type:'p'}).exec(function(err,pChildren){
+							if(err){
+								defer.reject(err);			
+							}else{								
+								children.push({
+									title: packets[i].name,
+									isFolder : packets[i].type == 'p',
+									isLazy: pChildren.length>0,
+									key: packets[i].id,
+									focus: false,
+									select:false,
+									active:false,
+									activate:false
+									
+								});
+								if(++i>=packets.length){
+									defer.resolve(children);
+								}else{
+									iterativeFor(i);											
+								}
+							}
+						});
+					}
+					iterativeFor(0);
+				}else{
+					defer.resolve(children);
+				}				
+			}
+		});
+		return defer.promise;
+	},
+
+	getChildren:function(children){
+		var defer = Q.defer();		
+	},
 	contentProject: function(parentId,projectId){
 		var defer = Q.defer();
 		Test.find({parentId:parentId,projectId:projectId}).exec(function(err,tests){
@@ -433,13 +533,14 @@ module.exports = {
 		});
 		return defer.promise;
 	},
+
 	getPath: function(itemId){
 		
 		var defer = Q.defer();
 		var path = "";
 		
-		//console.info("itemId: "+ itemId);
-		if(itemId=="0" || itemId == 0){
+		console.info("itemId: "+ itemId);
+		if(itemId=="0" || itemId == 0 || itemId == undefined){
 			defer.resolve({path:"/",pathArray:[]});
 		}else{
 			//console.info("buscando itemId: "+itemId);

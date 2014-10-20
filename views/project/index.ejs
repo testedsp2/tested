@@ -1,4 +1,9 @@
 <%- layout('/internal_layout.ejs') %>
+  <script src='/js/jquery/jquery-ui.custom.js' type="text/javascript"></script>
+  <script src='/js/jquery/jquery.cookie.js' type="text/javascript"></script>
+  <link rel='stylesheet' type='text/css' href='/styles/css/skin/ui.dynatree.css'>
+  <script src='/js/jquery.dynatree.js' type="text/javascript"></script>
+
 <style>
 	.checkFile {
 		float: left !important;
@@ -14,9 +19,12 @@
 <script >
   var Options = {
       
-      packetId : "<%=req.packetId%>"
+      packetId : "<%=req.packetId%>"      
   };
 </script>
+
+
+
 
 <div class="row" id="containerProject" rel="<%=req.projectCurrent.name%>">
 <ol class="breadcrumb">
