@@ -149,12 +149,13 @@ module.exports = {
 
   runTest: function(req,res){
     var testIds = req.param("testId");
+    var packetId = req.param("packetId");
     if(typeof testIds != 'object'){
       testIds = [testIds];
     }
     var projectId = req.projectCurrent.id;
     console.log(projectId);
-    projectService.runTest(testIds,projectId).then(function(data){
+    projectService.runTest(testIds,packetId,projectId).then(function(data){
       res.json(data);
     }).fail(function(err){
       res.json(err);

@@ -178,65 +178,136 @@ module.exports = {
 		var time = 15;
 		tmpl.name= nameTest;
 		var test ="";
-		for (var i = 0; i < tmpl.imports.length; i++) {
-			test += "import "+tmpl.imports[i]+";\n";
-		};
+		if(parentId != "0"){
+			Packet.findOne({id:parentId}).exec(function(err,objPackage){
+				if(err){
+					console.log(err);
+					defer.reject({message:"NO se pudo crear el test"});
+				}else{
+					if(objPackage){
+						console.log(objPackage.name);
+						test += "package " + objPackage.name + ";\n";
+						for (var i = 0; i < tmpl.imports.length; i++) {
+							test += "import "+tmpl.imports[i]+";\n";
+						};
 
-		test += "\npublic class "+ tmpl.name +"{\n\n";
-		test += "	WebDriver driver;\n";
-		test += "	WebDriverWait wait;\n\n";
-		test += "	@Test\n";
-		test += "	public void "+ tmpl.name +"_test(){\n";
-		test += "		driver = new FirefoxDriver();\n";
-		test += "		wait = new WebDriverWait(driver,15,1);\n";
-		test += "		driver.get(\""+paramsTest.url+"\");\n";
-        var cont = 0;
-		for(var i =0; i <paramsTest.selectorFind.length; i++){
-			//console.log(paramsTest.selectorFind[i]);
-			if(paramsTest.selectorFind[i] == "class"){
-				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementName[i] +"\")));\n";
-				test += "		driver.findElement(By.className(\""+paramsTest.elementName[i]+"\"))";
-				test = projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
+						test += "\npublic class "+ tmpl.name +"{\n\n";
+						test += "	WebDriver driver;\n";
+						test += "	WebDriverWait wait;\n\n";
+						test += "	@Test\n";
+						test += "	public void "+ tmpl.name +"_test(){\n";
+						test += "		driver = new FirefoxDriver();\n";
+						test += "		wait = new WebDriverWait(driver,15,1);\n";
+						test += "		driver.get(\""+paramsTest.url+"\");\n";
+				        var cont = 0;
+						for(var i =0; i <paramsTest.selectorFind.length; i++){
+							//console.log(paramsTest.selectorFind[i]);
+							if(paramsTest.selectorFind[i] == "class"){
+								test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementName[i] +"\")));\n";
+								test += "		driver.findElement(By.className(\""+paramsTest.elementName[i]+"\"))";
+								test = projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
 
-			}else 
-			if(paramsTest.selectorFind[i] == "id"){
-				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementName[i] +"\")));\n";
-				test += "		driver.findElement(By.id(\""+paramsTest.elementName[i]+"\"))";
-				test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
-			}else
-			if(paramsTest.selectorFind[i] == "text"){
-				test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\")));\n";
-				test += "		driver.findElement(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\"))";
-				test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
+							}else 
+							if(paramsTest.selectorFind[i] == "id"){
+								test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementName[i] +"\")));\n";
+								test += "		driver.findElement(By.id(\""+paramsTest.elementName[i]+"\"))";
+								test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
+							}else
+							if(paramsTest.selectorFind[i] == "text"){
+								test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\")));\n";
+								test += "		driver.findElement(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\"))";
+								test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
+							}
+							if(paramsTest.selectorAction[i] == "write"){
+								cont++;
+							}
+						}
+
+						test += "		try{\n"; 
+						for(var i =0; i <paramsTest.selectorFindDesition.length; i++){
+							if(paramsTest.selectorFindDesition[i] == "class"){
+								test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementNameDesition[i] +"\")));\n";	
+							}else
+							if(paramsTest.selectorFindDesition[i] == "id"){
+								test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementNameDesition[i] +"\")));\n";
+							}else
+							if(paramsTest.selectorFindDesition[i] == "text"){
+								test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementNameDesition[i]+"']\")));\n";
+							}
+						}
+						test += "		}catch(Exception e){\n";
+						test += "			Assert.fail(\" MENSAJE DE ERROR \" + e.getMessage());\n";
+						test += "		}\n";
+						test += "	}\n\n"
+
+						test += "	@AfterClass\n";
+						test += "	public void closeDriver(){\n";
+						test += "		driver.close();\n";
+						test += "	}\n";
+						test += "}";
+					}
+				}
+			});
+		}else{
+			for (var i = 0; i < tmpl.imports.length; i++) {
+				test += "import "+tmpl.imports[i]+";\n";
+			};
+
+			test += "\npublic class "+ tmpl.name +"{\n\n";
+			test += "	WebDriver driver;\n";
+			test += "	WebDriverWait wait;\n\n";
+			test += "	@Test\n";
+			test += "	public void "+ tmpl.name +"_test(){\n";
+			test += "		driver = new FirefoxDriver();\n";
+			test += "		wait = new WebDriverWait(driver,15,1);\n";
+			test += "		driver.get(\""+paramsTest.url+"\");\n";
+	        var cont = 0;
+			for(var i =0; i <paramsTest.selectorFind.length; i++){
+				//console.log(paramsTest.selectorFind[i]);
+				if(paramsTest.selectorFind[i] == "class"){
+					test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementName[i] +"\")));\n";
+					test += "		driver.findElement(By.className(\""+paramsTest.elementName[i]+"\"))";
+					test = projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
+
+				}else 
+				if(paramsTest.selectorFind[i] == "id"){
+					test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementName[i] +"\")));\n";
+					test += "		driver.findElement(By.id(\""+paramsTest.elementName[i]+"\"))";
+					test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
+				}else
+				if(paramsTest.selectorFind[i] == "text"){
+					test += "		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\")));\n";
+					test += "		driver.findElement(By.xpath(\"//*[text()='"+paramsTest.elementName[i]+"']\"))";
+					test =projectService.actionElement(test,paramsTest.selectorAction[i],paramsTest.elementText[cont]);
+				}
+				if(paramsTest.selectorAction[i] == "write"){
+					cont++;
+				}
 			}
-			if(paramsTest.selectorAction[i] == "write"){
-				cont++;
+
+			test += "		try{\n"; 
+			for(var i =0; i <paramsTest.selectorFindDesition.length; i++){
+				if(paramsTest.selectorFindDesition[i] == "class"){
+					test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementNameDesition[i] +"\")));\n";	
+				}else
+				if(paramsTest.selectorFindDesition[i] == "id"){
+					test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementNameDesition[i] +"\")));\n";
+				}else
+				if(paramsTest.selectorFindDesition[i] == "text"){
+					test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementNameDesition[i]+"']\")));\n";
+				}
 			}
+			test += "		}catch(Exception e){\n";
+			test += "			Assert.fail(\" MENSAJE DE ERROR \" + e.getMessage());\n";
+			test += "		}\n";
+			test += "	}\n\n"
+
+			test += "	@AfterClass\n";
+			test += "	public void closeDriver(){\n";
+			test += "		driver.close();\n";
+			test += "	}\n";
+			test += "}";
 		}
-
-		test += "		try{\n"; 
-		for(var i =0; i <paramsTest.selectorFindDesition.length; i++){
-			if(paramsTest.selectorFindDesition[i] == "class"){
-				test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.className(\""+paramsTest.elementNameDesition[i] +"\")));\n";	
-			}else
-			if(paramsTest.selectorFindDesition[i] == "id"){
-				test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(\""+paramsTest.elementNameDesition[i] +"\")));\n";
-			}else
-			if(paramsTest.selectorFindDesition[i] == "text"){
-				test += "			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(\"//*[text()='"+paramsTest.elementNameDesition[i]+"']\")));\n";
-			}
-		}
-		test += "		}catch(Exception e){\n";
-		test += "			Assert.fail(\" MENSAJE DE ERROR \" + e.getMessage());\n";
-		test += "		}\n";
-		test += "	}\n\n"
-
-		test += "	@AfterClass\n";
-		test += "	public void closeDriver(){\n";
-		test += "		driver.close();\n";
-		test += "	}\n";
-		test += "}";
-
 		
 		Test.findOne({parentId:parentId,name:nameTest,projectId:projectId}).exec(function(err,objTest){
 			if(err){
@@ -283,8 +354,9 @@ module.exports = {
 		return defer.promise;	
 	},
 
-	createXMLFile: function(testIds,projectId){
-		
+	createXMLFile: function(testIds,packageId,projectId){
+		console.log("asddd");
+		console.log(packageId);
 		var defer = Q.defer();
 		var pathProject = projectService.cprf+"/"+projectId+"/src";
 		var pathRun = projectService.cprf+"/"+projectId;
@@ -299,27 +371,54 @@ module.exports = {
 				defer.reject({message:"NO se pudo crear el archivo xml"});
 			}else{
 				if(tests){
-					for (var i = 0; i < testIds.length; i++) {
-						testXML += "<class name=\"" + tests[i].name + "\"/>\n";
+					if(packageId == "0"){
+						for (var i = 0; i < testIds.length; i++) {
+							testXML += "<class name=\"" + tests[i].name + "\"/>\n";
+						}
+						testXML += "</classes>\n";
+						testXML += "</test>\n";
+						testXML += "</suite>\n";
+						projectService.writeFile(pathProject + "/testng.xml",testXML).then(function(file){
+							defer.resolve(pathRun);
+						}).fail(function(err){
+							console.log(err);
+							defer.reject({message:"NO se pudo crear el archivo xml"});
+						});
+					}else{
+						Packet.findOne({id:packageId,projectId:projectId}).exec(function(err,objPackage){
+							if(err){
+								console.log(err);
+								defer.reject({message:"NO se pudo crear el archivo xml"});
+							}else{
+								if(objPackage){
+									console.log(objPackage.name);
+									for (var i = 0; i < testIds.length; i++) {
+
+										testXML += "<class name=\"" + objPackage.name + "." + tests[i].name + "\"/>\n";
+									}
+									testXML += "</classes>\n";
+									testXML += "</test>\n";
+									testXML += "</suite>\n";
+									projectService.writeFile(pathProject + "/testng.xml",testXML).then(function(file){
+										defer.resolve(pathRun);
+									}).fail(function(err){
+										console.log(err);
+										defer.reject({message:"NO se pudo crear el archivo xml"});
+									});
+								}
+							}
+						});
 					}
-					testXML += "</classes>\n";
-					testXML += "</test>\n";
-					testXML += "</suite>\n";
-					projectService.writeFile(pathProject + "/testng.xml",testXML).then(function(file){
-						defer.resolve(pathRun);
-					}).fail(function(err){
-						console.log(err);
-						defer.reject({message:"NO se pudo crear el archivo xml"});
-					});
+					
 				}
 			}
 		});
 		return defer.promise;
 	},
 
-	runTest: function(testIds,projectId){
+	runTest: function(testIds,packageId,projectId){
 		var defer = Q.defer();
- 		projectService.createXMLFile(testIds, projectId).then(function(pathRun){
+ 		projectService.createXMLFile(testIds,packageId, projectId).then(function(pathRun){
  			var child = exec('cd ' + pathRun + ' && ant',function (err, stdout, stderr) {
     		if (err) {
     			console.log(err);
