@@ -83,7 +83,17 @@ module.exports = {
       selectorFindDesition: selectorFindDesition,
       elementNameDesition: elementNameDesition
     }
-    projectService.createTest(projectId,packetId,nameTest,paramsTest).then(function(data){
+    projectService.createTest(projectId,packetId,nameTest,paramsTest,"firefox", true).then(function(data){
+      res.json(200);
+    }).fail(function(err){
+      res.json(err);
+    });
+    projectService.createTest(projectId,packetId,nameTest,paramsTest,"chrome", false).then(function(data){
+      res.json(200);
+    }).fail(function(err){
+      res.json(err);
+    });
+    projectService.createTest(projectId,packetId,nameTest,paramsTest,"opera", false).then(function(data){
       res.json(200);
     }).fail(function(err){
       res.json(err);

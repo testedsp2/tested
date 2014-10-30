@@ -7,7 +7,8 @@ module.exports = {
 	cprf: 'content-project',
 	templateTest : {
   		imports: ["org.openqa.selenium.By","org.openqa.selenium.WebElement"," org.openqa.selenium.support.ui.ExpectedConditions",
-  		"org.openqa.selenium.support.ui.WebDriverWait","org.testng.Assert","org.testng.annotations.*","org.openqa.selenium.WebDriver","org.openqa.selenium.firefox.FirefoxDriver"],
+  		"org.openqa.selenium.support.ui.WebDriverWait","org.testng.Assert","org.testng.annotations.*","org.openqa.selenium.WebDriver",
+  		"org.openqa.selenium.firefox.FirefoxDriver", "com.opera.core.systems.OperaDriver", "org.openqa.selenium.chrome.ChromeDriver"],
   		name:"",
   		functionTest: {    		
     		instrunctions:[],  
@@ -169,7 +170,7 @@ module.exports = {
 		return defer.promise;			
 	},
 
-	createTest: function(projectId,parentId,nameTest,paramsTest){
+	createTest: function(projectId,parentId,nameTest,paramsTest,browser,save){
 		var defer = Q.defer();
 		var projectId = projectId;
 		var pathProject = projectService.cprf+"/"+projectId+"/src";
@@ -191,14 +192,45 @@ module.exports = {
 							test += "import "+tmpl.imports[i]+";\n";
 						};
 
-						test += "\npublic class "+ tmpl.name +"{\n\n";
+						if(browser == "firefox"){
+							test += "\npublic class "+ tmpl.name + "_firefox" +"{\n\n";
+						}else
+						if(browser == "chrome"){
+							test += "\npublic class "+ tmpl.name + "_chrome" +"{\n\n";
+						}else
+						if(browser == "opera"){
+							test += "\npublic class "+ tmpl.name + "_opera" +"{\n\n";
+						}
+						
 						test += "	WebDriver driver;\n";
 						test += "	WebDriverWait wait;\n\n";
+
+						if(browser == "firefox"){
+							test += "	@BeforeClass\n";
+							test += "	public void InitDriver(){\n";
+							test += "		driver = new FirefoxDriver();\n";
+							test += "		wait = new WebDriverWait(driver,15,1);\n";
+							test += "		driver.get(\""+paramsTest.url+"\");\n";
+							test += "	}\n\n";
+						}else if(browser == "chrome"){
+							test += "	@BeforeClass\n";
+							test += "	public void InitDriver(){\n";
+							test += "		System.setProperty(\"webdriver.chrome.driver\", \"/home/jose/Escritorio/Proyecto Sp2/tested/content-project/chromedriver\");\n";
+       						test += "    	driver = new ChromeDriver();\n"
+							test += "		wait = new WebDriverWait(driver,15,1);\n";
+							test += "		driver.get(\""+paramsTest.url+"\");\n";
+							test += "	}\n\n";
+						}else if(browser == "opera"){
+							test += "	@BeforeClass\n";
+							test += "	public void InitDriver(){\n";
+							test += "		driver = new OperaDriver();\n";
+							test += "		wait = new WebDriverWait(driver,15,1);\n";
+							test += "		driver.get(\""+paramsTest.url+"\");\n";
+							test += "	}\n\n";
+						}
+
 						test += "	@Test\n";
 						test += "	public void "+ tmpl.name +"_test(){\n";
-						test += "		driver = new FirefoxDriver();\n";
-						test += "		wait = new WebDriverWait(driver,15,1);\n";
-						test += "		driver.get(\""+paramsTest.url+"\");\n";
 				        var cont = 0;
 						for(var i =0; i <paramsTest.selectorFind.length; i++){
 							//console.log(paramsTest.selectorFind[i]);
@@ -253,14 +285,42 @@ module.exports = {
 				test += "import "+tmpl.imports[i]+";\n";
 			};
 
-			test += "\npublic class "+ tmpl.name +"{\n\n";
+				if(browser == "firefox"){
+					test += "\npublic class "+ tmpl.name + "_firefox" +"{\n\n";
+				}else
+				if(browser == "chrome"){
+					test += "\npublic class "+ tmpl.name + "_chrome" +"{\n\n";
+				}else
+				if(browser == "opera"){
+					test += "\npublic class "+ tmpl.name + "_opera" +"{\n\n";
+				}
 			test += "	WebDriver driver;\n";
 			test += "	WebDriverWait wait;\n\n";
+			if(browser == "firefox"){
+				test += "	@BeforeClass\n";
+				test += "	public void InitDriver(){\n";
+				test += "		driver = new FirefoxDriver();\n";
+				test += "		wait = new WebDriverWait(driver,15,1);\n";
+				test += "		driver.get(\""+paramsTest.url+"\");\n";
+				test += "	}\n\n";
+			}else if(browser == "chrome"){
+				test += "	@BeforeClass\n";
+				test += "	public void InitDriver(){\n";
+				test += "		System.setProperty(\"webdriver.chrome.driver\", \"/home/jose/Escritorio/Proyecto Sp2/tested/content-project/chromedriver\");\n";
+					test += "    	driver = new ChromeDriver();\n"
+				test += "		wait = new WebDriverWait(driver,15,1);\n";
+				test += "		driver.get(\""+paramsTest.url+"\");\n";
+				test += "	}\n\n";
+			}else if(browser == "opera"){
+				test += "	@BeforeClass\n";
+				test += "	public void InitDriver(){\n";
+				test += "		driver = new OperaDriver();\n";
+				test += "		wait = new WebDriverWait(driver,15,1);\n";
+				test += "		driver.get(\""+paramsTest.url+"\");\n";
+				test += "	}\n\n";
+			}
 			test += "	@Test\n";
 			test += "	public void "+ tmpl.name +"_test(){\n";
-			test += "		driver = new FirefoxDriver();\n";
-			test += "		wait = new WebDriverWait(driver,15,1);\n";
-			test += "		driver.get(\""+paramsTest.url+"\");\n";
 	        var cont = 0;
 			for(var i =0; i <paramsTest.selectorFind.length; i++){
 				//console.log(paramsTest.selectorFind[i]);
@@ -308,49 +368,92 @@ module.exports = {
 			test += "	}\n";
 			test += "}";
 		}
-		
-		Test.findOne({parentId:parentId,name:nameTest,projectId:projectId}).exec(function(err,objTest){
-			if(err){
-				defer.reject(err);
-			}else{
-				if(objTest){
-					defer.reject({message:"Error ya existe un test con ese nombre"});
+		var namefile = "";
+		if(save){
+			Test.findOne({parentId:parentId,name:nameTest,projectId:projectId}).exec(function(err,objTest){
+				if(err){
+					defer.reject(err);
 				}else{
-					projectService.getPath(parentId).then(function(objPath){
-						//console.info(objPath.path);
-						pathProject += objPath.path;						
-						projectService.createFile(pathProject+tmpl.name+".java").then(function(file){
-							projectService.writeFile(pathProject+tmpl.name+".java",test).then(function(data){
-								var objTest = {
-									type: "t",
-									name: nameTest,
-									descripcion: "",
-									resultado:"",
-									parentId:parentId,
-									projectId:projectId,
-									project:projectId
-								}
-								Test.create(objTest).exec(function(err,cTest){
-									if(err){
-										defer.reject(err);
-									}else{
-										defer.resolve({stats:0});		
+					if(objTest){
+						defer.reject({message:"Error ya existe un test con ese nombre"});
+					}else{
+						projectService.getPath(parentId).then(function(objPath){
+							//console.info(objPath.path);
+							pathProject += objPath.path;
+							if(browser == "firefox"){
+								namefile = pathProject+tmpl.name+"_firefox"+".java"
+								console.log(namefile);
+							}else
+							if(browser == "chrome"){
+								namefile = pathProject+tmpl.name+"_chrome"+".java"
+								console.log(namefile);
+							}else
+							if(browser == "opera"){
+								namefile = pathProject+tmpl.name+"_opera"+".java"
+								console.log(namefile);
+							}							
+							projectService.createFile(namefile).then(function(file){
+								projectService.writeFile(namefile,test).then(function(data){
+									var objTest = {
+										type: "t",
+										name: nameTest,
+										descripcion: "",
+										resultado:"",
+										parentId:parentId,
+										projectId:projectId,
+										project:projectId
 									}
+									Test.create(objTest).exec(function(err,cTest){
+										if(err){
+											defer.reject(err);
+										}else{
+											defer.resolve({stats:0});	
+										}
+									});
+									
+								}).fail(function(err){
+									defer.reject(err);
 								});
-								
 							}).fail(function(err){
 								defer.reject(err);
 							});
 						}).fail(function(err){
 							defer.reject(err);
-						});
+						})
+					}
+					
+				}
+			});
+		}else{
+			projectService.getPath(parentId).then(function(objPath){
+				//console.info(objPath.path);
+				pathProject += objPath.path;
+				if(browser == "firefox"){
+					namefile = pathProject+tmpl.name+"_firefox"+".java"
+					console.log(namefile);
+				}else
+				if(browser == "chrome"){
+					namefile = pathProject+tmpl.name+"_chrome"+".java"
+					console.log(namefile);
+				}else
+				if(browser == "opera"){
+					namefile = pathProject+tmpl.name+"_opera"+".java"
+					console.log(namefile);
+				}							
+				projectService.createFile(namefile).then(function(file){
+					projectService.writeFile(namefile,test).then(function(data){
+						defer.resolve({stats:0});
+						
 					}).fail(function(err){
 						defer.reject(err);
-					})
-				}
-				
-			}
-		});
+					});
+				}).fail(function(err){
+					defer.reject(err);
+				});
+			}).fail(function(err){
+				defer.reject(err);
+			})
+		}
 		return defer.promise;	
 	},
 
@@ -494,7 +597,7 @@ module.exports = {
 				if(item){			
 					console.info(item);	
 					projectService.getPath(item.parentId).then(function(objPath){
-						var path = projectService.cprf+"/"+item.projectId+"/src"+objPath.path + item.name+".java";
+						var path = projectService.cprf+"/"+item.projectId+"/src"+objPath.path + item.name+ "_firefox"+".java";
 						console.info("eliminando "+path);
 						fs.unlink(path,function(err,deletedItem){
 							if(err){
@@ -505,9 +608,37 @@ module.exports = {
 									if(err){
 										defer.reject({message: "Error: item no encontrado"});
 									}else{
-										defer.resolve({status:0});
+										var path = projectService.cprf+"/"+item.projectId+"/src"+objPath.path + item.name+ "_chrome" + ".java";
+										fs.unlink(path,function(err,deletedItem){
+											if(err){
+												console.info(err)
+												defer.reject({message: "Error: item no encontrado"});
+											}else{
+												Test.destroy({id:item.id}).exec(function(err,delItem){
+													if(err){
+														defer.reject({message: "Error: item no encontrado"});
+													}else{
+														var path = projectService.cprf+"/"+item.projectId+"/src"+objPath.path + item.name+ "_opera" + ".java";
+														fs.unlink(path,function(err,deletedItem){
+															if(err){
+																console.info(err)
+																defer.reject({message: "Error: item no encontrado"});
+															}else{
+																Test.destroy({id:item.id}).exec(function(err,delItem){
+																	if(err){
+																		defer.reject({message: "Error: item no encontrado"});
+																	}else{
+																		defer.resolve({status:0});
+																	}
+																});
+															}
+														});
+													}
+												});
+											}
+										});				
 									}
-								})
+								});
 							}
 						});				
 					}).fail(function(err){
