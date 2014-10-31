@@ -457,7 +457,7 @@ module.exports = {
 		return defer.promise;	
 	},
 
-	createXMLFile: function(testIds,packageId,projectId){
+	createXMLFile: function(testIds,packageId,projectId,browser){
 		console.log("asddd");
 		console.log(packageId);
 		var defer = Q.defer();
@@ -476,7 +476,7 @@ module.exports = {
 				if(tests){
 					if(packageId == "0"){
 						for (var i = 0; i < testIds.length; i++) {
-							testXML += "<class name=\"" + tests[i].name + "\"/>\n";
+							testXML += "<class name=\"" + tests[i].name + "_" + browser + "\"/>\n";
 						}
 						testXML += "</classes>\n";
 						testXML += "</test>\n";
@@ -497,7 +497,7 @@ module.exports = {
 									console.log(objPackage.name);
 									for (var i = 0; i < testIds.length; i++) {
 
-										testXML += "<class name=\"" + objPackage.name + "." + tests[i].name + "\"/>\n";
+										testXML += "<class name=\"" + objPackage.name + "." + tests[i].name + "_" + browser + "\"/>\n";
 									}
 									testXML += "</classes>\n";
 									testXML += "</test>\n";
@@ -519,9 +519,9 @@ module.exports = {
 		return defer.promise;
 	},
 
-	runTest: function(testIds,packageId,projectId){
+	runTest: function(testIds,packageId,projectId,browser){
 		var defer = Q.defer();
- 		projectService.createXMLFile(testIds,packageId, projectId).then(function(pathRun){
+ 		projectService.createXMLFile(testIds,packageId, projectId, browser).then(function(pathRun){
  			var child = exec('cd ' + pathRun + ' && ant',function (err, stdout, stderr) {
     		if (err) {
     			console.log(err);

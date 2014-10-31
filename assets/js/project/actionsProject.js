@@ -3,6 +3,8 @@ var actionProject = {
 	projectName : $("#containerProject").attr("rel"),
 	packetId : Options.packetId,
 	tree : null,
+	params : [],
+	browser : "firefox",
 
 	initActionProjects : function(){
 	var projectName = actionProject.projectName;
@@ -35,10 +37,26 @@ var actionProject = {
 		}
 
 		$("#runTests").on("click",function(){
-			execAction("/tested/"+projectName+"/"+packetId+"/runTest",function(data){
-
-			});
+			var checkes = $(".checkFile:checked");
+			var params = [];
+			for (var i = 0; i < checkes.length; i++) {
+				params.push({
+					name:"testId",
+					value: $(checkes[i]).attr("rel")
+				});
+			};
+			actionProject.params = params;
+			$('#browsersModal').modal("show");
 		});
+
+		$(".selectBrowser").on("click",function(){
+			actionProject.browser = $(this).attr("rel");
+			$(".select").find('.img-responsive').removeClass('img-thumbnail');
+			$(".select").removeClass('select');
+			$(this).addClass('select');
+			$(this).find('.img-responsive').addClass('img-thumbnail');
+		});
+
 		$("#deleteTests").on("click",function(){
 			execAction("/tested/"+projectName+"/"+packetId+"/deleteTest",function(data){
 				if(data.status == 0){
@@ -56,10 +74,26 @@ var actionProject = {
 					name:"testId",
 					value: testId
 				}];
+			actionProject.params = params;
+			$('#browsersModal').modal("show");
+		});
+
+		$("#btnRunTestsModal").on("click",function(){
+			var params = [];
+			params = params.concat(actionProject.params);
+			params.push({
+				name:"browser",
+				value: actionProject.browser 
+			});
+			console.info(params);
+
 			$.post("/tested/"+projectName+"/"+packetId+"/runTest",params,function(data){
 				
 			});
+			$('#browsersModal').modal("hide");
 		});
+
+
 		$(".btnDeleteTest").on("click",function(){
 			var test = $(this);
 			var testId = $(test).attr("rel");

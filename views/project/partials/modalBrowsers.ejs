@@ -1,0 +1,36 @@
+<style>
+  .select{
+    background-color: #d3d3d3;
+  }
+</style>
+<div id= "browsersModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">Seleccione un navegador</h4>
+      </div>
+      
+        <div class="col-sm-4">
+          <a class="selectBrowser" href="#" rel="chrome">
+            <img class="img-responsive" src="/images/chrome.ico"/>
+          </a>
+        </div>
+         <div class="col-sm-4">
+          <a class="selectBrowser select" href="#" rel="firefox">
+            <img class="img-responsive img-thumbnail" src="/images/firefox.png"/>
+          </a>
+        </div>
+         <div class="col-sm-4">
+          <a  class="selectBrowser" href="#" rel="opera">
+            <img class="img-responsive" src="/images/opera.jpg"/>
+          </a>
+        </div>
+      
+      <div class="modal-footer">
+        <button type="button" id = "btnCancel" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" id ="btnRunTestsModal" class="btn btn-primary">Ejecutar</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
