@@ -1,0 +1,60 @@
+<%- layout('/internal_layout.ejs') %>
+<script type="text/javascript">
+$(function () {
+	var project = $('#grafica').attr("rel");
+		var fails = 0;
+		var total = 0;
+		var success = 0;
+	$.post("/tested/"+project+"/0/getReports",function(data){
+		console.info(data);
+		total = data.length;
+		for (var i = 0; i < data.length; i++) {
+			console.info(parseInt(data[i].testsuite.$.errors));
+			fails += parseInt(data[i].testsuite.$.errors);
+		};
+		success = total - fails;
+		console.info(fails);
+		console.info(total);
+	    $('#grafica').highcharts({
+	        chart: {
+	            plotBackgroundColor: null,
+	            plotBorderWidth: null,
+	            plotShadow: false
+	        },
+	        title: {
+	            text: ''
+	        },
+	        tooltip: {
+	    	    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	        },
+	        plotOptions: {
+	            pie: {
+	                allowPointSelect: true,
+	                cursor: 'pointer',
+	                dataLabels: {
+	                    enabled: true,
+	                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+	                    style: {
+	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	                    }
+	                }
+	            }
+	        },
+	        series: [{
+	            type: 'pie',
+	            name: 'test',
+	            data: [
+	                ['Success',  success ],
+	                ['Fails',       fails],
+	            ]
+	        }]
+	    });
+	});
+});
+    
+
+		</script>
+
+<script src="/js/highcharts.js"></script>
+<script src="/js/modules/exporting.js"></script>
+<div id="grafica" rel ="<%=req.projectCurrent.name%>" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>

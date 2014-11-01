@@ -17,7 +17,7 @@
 	<!-- Initialize -->
 	<target name="init">
 		<delete dir="${bin.dir}"/>
-		<delete dir="${testng_output}"/>
+		<delete dir="${testng_output.dir}"/>
 		<delete dir="${src.dir}/testng-xslt"/>
 		<mkdir dir="${bin.dir}"/>
 		<mkdir dir="${src.dir}/testng-xslt"/>

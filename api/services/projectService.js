@@ -2,6 +2,7 @@
 var fs = require('fs-extra');
 var Q = require('q');
 var exec = require('child_process').exec;
+var parseString = require('xml2js').parseString;
 
 module.exports = {
 	cprf: 'content-project',
@@ -792,4 +793,57 @@ module.exports = {
 		}
 		return defer.promise;
 	},
+	getReports: function(projectId){
+		var defer = Q.defer();
+		var path = projectService.cprf+"/"+projectId+"/src/testng_output/junitreports/";
+		console.info(path);
+		projectService.listFiles(path).then(function(reportsXMLFile){
+			console.info(reportsXMLFile);
+			var readFileArrayQ = []; 
+			for (var i = 0; i < reportsXMLFile.length; i++) {
+				readFileArrayQ.push(projectService.readFile(path+reportsXMLFile[i]));
+			};
+			Q.all(readFileArrayQ).then(function(data){
+				console.info(data);
+				var parseXmlArrayQ = [];
+				for (var j = 0; j < data.length; j++) {
+					parseXmlArrayQ.push(projectService.parseXml(data[j]));
+				};
+				Q.all(parseXmlArrayQ).then(function (objXML){
+					console.info(objXML);
+					defer.resolve(objXML);
+				}).fail(function(err){
+					console.info(err);
+					defer.reject(err)
+				});
+			}).fail(function(err){
+				console.info(err);
+				defer.reject(err)
+			});
+		});
+		return defer.promise;
+	},
+	parseXml: function(fileXml){
+		var defer = Q.defer();
+		parseString(fileXml, function (err, result) {
+			if(err){
+				defer.reject(err);
+			}else{
+    			defer.resolve(result);
+    		}
+		});
+		return defer.promise;
+	},
+
+	readFile : function(path){
+		var defer = Q.defer();
+		fs.readFile(path, "utf8" ,function (err, data) {
+		  if (err){
+		  	defer.reject(err);
+		  }else{
+		  	defer.resolve(data);	
+		  }
+		});
+		return defer.promise;
+	}
 };

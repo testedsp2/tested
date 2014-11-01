@@ -185,6 +185,19 @@ module.exports = {
       return res.json({massage:"Error al eliminar"});  
     });    
     
+  },
+
+  reports: function(req,res){
+    res.view();
+  },
+  
+  getReports: function(req,res){
+    var projectId = req.projectCurrent.id;
+    projectService.getReports(projectId).then(function(result){
+      res.json(result);
+    }).fail(function(err){
+      res.json(err);
+    });
   }
 
 };

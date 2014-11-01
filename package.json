@@ -29,7 +29,7 @@
     "sails-disk": "~0.10.0",
     "sails-mongo": "^0.10.4",
     "waterline": "^0.10.9",
-    "connect-mongo": "~0.4.1"
+    "xml2js": "~0.4.4"
   },
   "scripts": {
     "start": "node app.js",

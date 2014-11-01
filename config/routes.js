@@ -99,6 +99,14 @@ module.exports.routes = {
     controller: 'ProjectController',
     action: 'getTree'
   },
+  '/tested/:projectName/:packetId/reports':{
+    controller: 'ProjectController',
+    action: 'reports'
+  },
+  'post /tested/:projectName/:packetId/getReports':{
+    controller: 'ProjectController',
+    action: 'getReports'
+  },
 
 
   /***************************************************************************
