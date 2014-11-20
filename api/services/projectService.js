@@ -232,6 +232,7 @@ module.exports = {
 
 						test += "	@Test\n";
 						test += "	public void "+ tmpl.name +"_test(){\n";
+						test += "   	try{\n";
 				        var cont = 0;
 						for(var i =0; i <paramsTest.selectorFind.length; i++){
 							//console.log(paramsTest.selectorFind[i]);
@@ -270,6 +271,9 @@ module.exports = {
 						}
 						test += "		}catch(Exception e){\n";
 						test += "			Assert.fail(\" MENSAJE DE ERROR \" + e.getMessage());\n";
+						test += "		}\n";
+						test += "   	}catch(Exception e){\n";
+						test += "			Assert.fail(\" Alguna instruccion del proceso no se ingreso correctamente \");\n";
 						test += "		}\n";
 						test += "	}\n\n"
 
@@ -322,6 +326,7 @@ module.exports = {
 			}
 			test += "	@Test\n";
 			test += "	public void "+ tmpl.name +"_test(){\n";
+			test += "   	try{\n";
 	        var cont = 0;
 			for(var i =0; i <paramsTest.selectorFind.length; i++){
 				//console.log(paramsTest.selectorFind[i]);
@@ -360,6 +365,9 @@ module.exports = {
 			}
 			test += "		}catch(Exception e){\n";
 			test += "			Assert.fail(\" MENSAJE DE ERROR \" + e.getMessage());\n";
+			test += "		}\n";
+			test += "   	}catch(Exception e){\n";
+			test += "			Assert.fail(\" Alguna instruccion del proceso no se ingreso correctamente \");\n";
 			test += "		}\n";
 			test += "	}\n\n"
 
@@ -798,7 +806,7 @@ module.exports = {
 		var path = projectService.cprf+"/"+projectId+"/src/testng_output/junitreports/";
 		console.info(path);
 		projectService.listFiles(path).then(function(reportsXMLFile){
-			console.info(reportsXMLFile);
+			//console.info(reportsXMLFile);
 			var readFileArrayQ = []; 
 			for (var i = 0; i < reportsXMLFile.length; i++) {
 				readFileArrayQ.push(projectService.readFile(path+reportsXMLFile[i]));
@@ -809,9 +817,9 @@ module.exports = {
 				for (var j = 0; j < data.length; j++) {
 					parseXmlArrayQ.push(projectService.parseXml(data[j]));
 				};
-				Q.all(parseXmlArrayQ).then(function (objXML){
-					console.info(objXML);
-					defer.resolve(objXML);
+				Q.all(parseXmlArrayQ).then(function (objJSON){
+					console.info(objJSON);
+					defer.resolve(objJSON);
 				}).fail(function(err){
 					console.info(err);
 					defer.reject(err)

@@ -190,6 +190,10 @@ module.exports = {
   reports: function(req,res){
     res.view();
   },
+
+  reports_success: function(req,res){
+    res.view();
+  },
   
   getReports: function(req,res){
     var projectId = req.projectCurrent.id;

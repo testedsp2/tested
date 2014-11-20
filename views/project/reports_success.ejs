@@ -6,16 +6,12 @@ $(function () {
 	var total = 0;
 	var success = 0;
 	$.post("/tested/"+project+"/0/getReports",function(data){
-		console.info(data);
-		total = data.length;
+		var dataArray = [];
 		for (var i = 0; i < data.length; i++) {
-			console.info(parseInt(data[i].testsuite.$.errors));
-			fails += parseInt(data[i].testsuite.$.errors);
+			if(data[i].testsuite.$.errors=="0")
+			dataArray[i]={name : data[i].testsuite.$.name,y:parseFloat(data[i].testsuite.$.time)};
 		};
-		success = total - fails;
-		console.info(fails);
-		console.info(total);
-		
+		console.log(dataArray);
 	    $('#grafica').highcharts({
 	        chart: {
 	        	type: 'pie',
@@ -29,7 +25,7 @@ $(function () {
 	            text: ''
 	        },
 	        tooltip: {
-	    	    pointFormat: '{series.name}: <b>{point.total}</b>'
+	    	    pointFormat: '{series.name}: <b>{point.total} seg</b>'
 	        },
 	        plotOptions: {
 	            pie: {
@@ -38,7 +34,7 @@ $(function () {
 	                depth: 35,
 	                dataLabels: {
 	                    enabled: true,
-	                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+	                    format: '<b>{point.name}</b>',
 	                    style: {
 	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
 	                    }
@@ -47,26 +43,8 @@ $(function () {
 	        },
 	        series: [{
 	            type: 'pie',
-	            name: 'test',
-	            data: [
-	            	{ 
-	            		events: {
-		        			click:function(e){
-		        				console.log(e);
-		        				//llamada
-
-		        			}
-	        			},
-	        			name: 'Fallos',
-	        			y: fails,
-	        			color: '#FF0000'
-	        		},
-	        		{
-	        			name: 'Exitosos',
-	        			y: success,
-	        			color: '#005F00'
-	        		}
-	        	]
+	            name: 'time',
+	            data: dataArray
 	       	}]
 	    });
 	});
