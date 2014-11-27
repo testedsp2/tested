@@ -60,10 +60,7 @@ var actionProject = {
 		$("#deleteTests").on("click",function(){
 			execAction("/tested/"+projectName+"/"+packetId+"/deleteTest",function(data){
 				if(data.status == 0){
-					alert("Objeto Eliminado");
 					location.reload();
-				}else{
-					alert(data.message);
 				}
 			});
 		});

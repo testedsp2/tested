@@ -270,7 +270,7 @@ module.exports = {
 							}
 						}
 						test += "		}catch(Exception e){\n";
-						test += "			Assert.fail(\" MENSAJE DE ERROR \" + e.getMessage());\n";
+						test += "			Assert.fail(\"" + paramsTest.errorMessage + " \");\n";
 						test += "		}\n";
 						test += "   	}catch(Exception e){\n";
 						test += "			Assert.fail(\" Alguna instruccion del proceso no se ingreso correctamente \");\n";
@@ -364,7 +364,7 @@ module.exports = {
 				}
 			}
 			test += "		}catch(Exception e){\n";
-			test += "			Assert.fail(\" MENSAJE DE ERROR \" + e.getMessage());\n";
+			test += "			Assert.fail(\"" + paramsTest.errorMessage + " \");\n";
 			test += "		}\n";
 			test += "   	}catch(Exception e){\n";
 			test += "			Assert.fail(\" Alguna instruccion del proceso no se ingreso correctamente \");\n";

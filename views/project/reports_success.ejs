@@ -7,9 +7,13 @@ $(function () {
 	var success = 0;
 	$.post("/tested/"+project+"/0/getReports",function(data){
 		var dataArray = [];
+		var n=0;
 		for (var i = 0; i < data.length; i++) {
-			if(data[i].testsuite.$.errors=="0")
-			dataArray[i]={name : data[i].testsuite.$.name,y:parseFloat(data[i].testsuite.$.time)};
+			if(data[i].testsuite.$.errors=="0"){
+			 dataArray[n]={name : data[i].testsuite.$.name,y:parseFloat(data[i].testsuite.$.time)};
+			 n++;
+			 console.log(dataArray[i]);
+			}
 		};
 		console.log(dataArray);
 	    $('#grafica').highcharts({
@@ -25,7 +29,7 @@ $(function () {
 	            text: ''
 	        },
 	        tooltip: {
-	    	    pointFormat: '{series.name}: <b>{point.total} seg</b>'
+	           pointFormat: '{series.name}: <b>{point.y} seg<br>Tiempo total<b>{point.total}</b>seg</b>'
 	        },
 	        plotOptions: {
 	            pie: {
@@ -34,7 +38,7 @@ $(function () {
 	                depth: 35,
 	                dataLabels: {
 	                    enabled: true,
-	                    format: '<b>{point.name}</b>',
+	                    format: '<b>{point.name}</b> {point.percentage:.1f} %',
 	                    style: {
 	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
 	                    }
@@ -43,7 +47,7 @@ $(function () {
 	        },
 	        series: [{
 	            type: 'pie',
-	            name: 'time',
+	            name: 'tiempo',
 	            data: dataArray
 	       	}]
 	    });

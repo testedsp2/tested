@@ -18,12 +18,12 @@ module.exports = {
     if(packetId == undefined){
   	   packetId = "0";
     }
-
+    console.info(req.projectCurrent);
   	projectService.contentProject(packetId,req.projectCurrent.id).then(function(tests){
       req.packetId = packetId;
       projectService.getPath(packetId).then(function(objPath){
         req.packetId = packetId;          		  
-        return res.view({tests:tests,pathArray:objPath.pathArray});
+        return res.view({projectName:req.projectCurrent.name,tests:tests,pathArray:objPath.pathArray});
       }).fail(function(err){
         return res.json(err);
       })
@@ -50,6 +50,7 @@ module.exports = {
     var selectorFindDesition = req.param("selectorFindDesition");
     var elementNameDesition= req.param("elementNameDesition");
     var packetId = req.param("packetId");
+    var errorMessage = req.param("messageFail");
     var projectId = req.projectCurrent.id;
     if(packetId == undefined){
       packetId = "0";
@@ -81,7 +82,8 @@ module.exports = {
       selectorAction: selectorAction,
       elementText: elementText,
       selectorFindDesition: selectorFindDesition,
-      elementNameDesition: elementNameDesition
+      elementNameDesition: elementNameDesition,
+      errorMessage: errorMessage
     }
     projectService.createTest(projectId,packetId,nameTest,paramsTest,"firefox", true).then(function(data){
       res.json(200);
@@ -192,6 +194,10 @@ module.exports = {
   },
 
   reports_success: function(req,res){
+    res.view();
+  },
+
+  reports_fails: function(req,res){
     res.view();
   },
   

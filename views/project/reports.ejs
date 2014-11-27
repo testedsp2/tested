@@ -8,9 +8,11 @@ $(function () {
 	$.post("/tested/"+project+"/0/getReports",function(data){
 		console.info(data);
 		total = data.length;
+		tiempo = 0;
 		for (var i = 0; i < data.length; i++) {
 			console.info(parseInt(data[i].testsuite.$.errors));
 			fails += parseInt(data[i].testsuite.$.errors);
+			tiempo += data[i].testsuite.$.time;
 		};
 		success = total - fails;
 		console.info(fails);
@@ -29,7 +31,7 @@ $(function () {
 	            text: ''
 	        },
 	        tooltip: {
-	    	    pointFormat: '{series.name}: <b>{point.total}</b>'
+	    	    pointFormat: 'Cantidad:<b>{point.y}</b><br>Total:<b>{point.total}<br></b>'
 	        },
 	        plotOptions: {
 	            pie: {
@@ -38,7 +40,7 @@ $(function () {
 	                depth: 35,
 	                dataLabels: {
 	                    enabled: true,
-	                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+	                    format: '<b>{point.name}</b>:{point.percentage:.1f} %',
 	                    style: {
 	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
 	                    }
@@ -47,13 +49,14 @@ $(function () {
 	        },
 	        series: [{
 	            type: 'pie',
-	            name: 'test',
+	            name: 'tests',
+	            time: tiempo,
 	            data: [
 	            	{ 
 	            		events: {
 		        			click:function(e){
 		        				console.log(e);
-		        				//llamada
+		        				window.location = "/tested/<%=req.projectCurrent.name%>/0/reports_fails";
 
 		        			}
 	        			},
@@ -64,7 +67,14 @@ $(function () {
 	        		{
 	        			name: 'Exitosos',
 	        			y: success,
-	        			color: '#005F00'
+	        			color: '#005F00',
+	        			events: {
+		        			click:function(e){
+		        				console.log(e);
+		        				window.location = "/tested/<%=req.projectCurrent.name%>/0/reports_success";
+
+		        			}
+	        			}
 	        		}
 	        	]
 	       	}]

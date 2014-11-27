@@ -107,6 +107,10 @@ module.exports.routes = {
     controller: 'ProjectController',
     action: 'reports_success'
   },
+   '/tested/:projectName/:packetId/reports_fails':{
+    controller: 'ProjectController',
+    action: 'reports_fails'
+  },
   'post /tested/:projectName/:packetId/getReports':{
     controller: 'ProjectController',
     action: 'getReports'
